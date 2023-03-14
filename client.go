@@ -11,7 +11,7 @@ import (
 
 var defaultCtx = context.Background()
 
-func handleClient(client comment.CommentService) (err error) {
+func handleClient(client comment.CommentHandler) (err error) {
 	res, err := client.GenCommentID(defaultCtx, &comment.GenCommentIDRequest{Base: &base.RPCRequest{}})
 	if err != nil {
 		return err
@@ -38,5 +38,5 @@ func runClient(transportFactory thrift.TTransportFactory, protocolFactory thrift
 	}
 	iprot := protocolFactory.GetProtocol(transport)
 	oprot := protocolFactory.GetProtocol(transport)
-	return handleClient(comment.NewCommentServiceClient(thrift.NewTStandardClient(iprot, oprot)))
+	return handleClient(comment.NewCommentHandlerClient(thrift.NewTStandardClient(iprot, oprot)))
 }

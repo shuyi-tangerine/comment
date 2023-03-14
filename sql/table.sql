@@ -1,4 +1,5 @@
 
+-- TODO 需要考虑一下二级评论、多级评论怎么弄
 CREATE TABLE `comment` (
                            `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '自增主键',
                            `comment_id` BIGINT NOT NULL DEFAULT 0 COMMENT '评论ID',

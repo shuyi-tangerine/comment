@@ -2,6 +2,11 @@ include "base.thrift"
 
 namespace go tangerine.comment
 
+enum CommentStatus {
+    Normal = 1;
+    Deleted = 2;
+}
+
 struct GenCommentIDRequest {
     1: optional i8 amount   // 需要的数量，默认返回 1 个
     255: optional base.RPCRequest Base
@@ -73,7 +78,7 @@ struct DeleteResponse {
     255: required base.RPCResponse Base
 }
 
-service CommentService {
+service CommentHandler {
     // 生成 comment_id
     GenCommentIDResponse GenCommentID(1:GenCommentIDRequest req)
     // 发送评论

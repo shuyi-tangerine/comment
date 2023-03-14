@@ -7,16 +7,16 @@ import (
 	"time"
 )
 
-type CommentService struct {
+type CommentHandler struct {
 }
 
-func NewCommentService() comment.CommentService {
-	return &CommentService{}
+func NewCommentHandler() comment.CommentHandler {
+	return &CommentHandler{}
 }
 
 // GenCommentID
 // TODO 改成分布式ID生成算法
-func (m *CommentService) GenCommentID(ctx context.Context, req *comment.GenCommentIDRequest) (res *comment.GenCommentIDResponse, _err error) {
+func (m *CommentHandler) GenCommentID(ctx context.Context, req *comment.GenCommentIDRequest) (res *comment.GenCommentIDResponse, _err error) {
 	res = &comment.GenCommentIDResponse{
 		CommentIds: nil,
 		Base: &base.RPCResponse{
@@ -38,14 +38,14 @@ func (m *CommentService) GenCommentID(ctx context.Context, req *comment.GenComme
 	return
 }
 
-func (m *CommentService) Post(ctx context.Context, req *comment.PostRequest) (res *comment.PostResponse, _err error) {
+func (m *CommentHandler) Post(ctx context.Context, req *comment.PostRequest) (res *comment.PostResponse, _err error) {
 	panic("not support")
 }
 
-func (m *CommentService) List(ctx context.Context, req *comment.ListRequest) (res *comment.ListResponse, _err error) {
+func (m *CommentHandler) List(ctx context.Context, req *comment.ListRequest) (res *comment.ListResponse, _err error) {
 	panic("not support")
 }
 
-func (m *CommentService) Delete(ctx context.Context, req *comment.DeleteRequest) (res *comment.DeleteResponse, _err error) {
+func (m *CommentHandler) Delete(ctx context.Context, req *comment.DeleteRequest) (res *comment.DeleteResponse, _err error) {
 	panic("not support")
 }

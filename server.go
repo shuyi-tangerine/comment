@@ -27,8 +27,8 @@ func runServer(transportFactory thrift.TTransportFactory, protocolFactory thrift
 		return err
 	}
 	fmt.Printf("%T\n", transport)
-	handler := NewCommentService()
-	processor := comment.NewCommentServiceProcessor(handler)
+	handler := NewCommentHandler()
+	processor := comment.NewCommentHandlerProcessor(handler)
 	server := thrift.NewTSimpleServer4(processor, transport, transportFactory, protocolFactory)
 
 	fmt.Println("Starting the simple server... on ", addr)
