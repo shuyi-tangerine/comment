@@ -2,8 +2,9 @@
 CREATE TABLE `comment` (
                            `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '自增主键',
                            `comment_id` BIGINT NOT NULL DEFAULT 0 COMMENT '评论ID',
-                           `app_id` INT NOT NULL DEFAULT 0 COMMENT '应用ID',
                            `user_id` BIGINT NOT NULL DEFAULT 0 COMMENT '用户ID',
+                           `group_id` BIGINT NOT NULL DEFAULT 0 COMMENT '所属分组ID，比如视频、文章等',
+                           `app_id` INT NOT NULL DEFAULT 0 COMMENT '应用ID',
                            `text` VARCHAR(256) DEFAULT NULL COMMENT '文本',
                            `images` JSON DEFAULT NULL COMMENT '图片',
                            `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间，也就是通知发送时间',
