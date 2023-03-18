@@ -18,7 +18,8 @@ func main() {
 	flag.Usage = Usage
 	server := flag.Bool("server", false, "Run server")
 	protocol := flag.String("P", "binary", "Specify the protocol (binary, compact, json, simplejson)")
-	transport := flag.String("transport", "", "Use framed/buffered transport（framed/buffered）")
+	framed := flag.Bool("framed", false, "Use framed transport")
+	buffered := flag.Bool("buffered", false, "Use buffered transport")
 	addr := flag.String("addr", "localhost:9090", "Address to listen to")
 	secure := flag.Bool("secure", false, "Use tls secure transport")
 
@@ -46,12 +47,15 @@ func main() {
 			InsecureSkipVerify: true,
 		},
 	}
-	if *transport == "buffered" {
+
+	if *buffered {
 		transportFactory = thrift.NewTBufferedTransportFactory(8192)
-	} else if *transport == "framed" {
-		transportFactory = thrift.NewTFramedTransportFactoryConf(transportFactory, cfg)
 	} else {
 		transportFactory = thrift.NewTTransportFactory()
+	}
+
+	if *framed {
+		transportFactory = thrift.NewTFramedTransportFactoryConf(transportFactory, cfg)
 	}
 
 	if *server {

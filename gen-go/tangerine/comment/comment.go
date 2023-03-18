@@ -8,10 +8,9 @@ import (
 	"database/sql/driver"
 	"errors"
 	"fmt"
-	"time"
 	thrift "github.com/apache/thrift/lib/go/thrift"
 	"github.com/shuyi-tangerine/comment/gen-go/base"
-
+	"time"
 )
 
 // (needed to ensure safety because of naive import list construction.)
@@ -23,3975 +22,4538 @@ var _ = time.Now
 var _ = bytes.Equal
 
 var _ = base.GoUnusedProtection__
+
 type CommentStatus int64
+
 const (
-  CommentStatus_Normal CommentStatus = 1
-  CommentStatus_Deleted CommentStatus = 2
+	CommentStatus_Normal  CommentStatus = 1
+	CommentStatus_Deleted CommentStatus = 2
 )
 
 func (p CommentStatus) String() string {
-  switch p {
-  case CommentStatus_Normal: return "Normal"
-  case CommentStatus_Deleted: return "Deleted"
-  }
-  return "<UNSET>"
+	switch p {
+	case CommentStatus_Normal:
+		return "Normal"
+	case CommentStatus_Deleted:
+		return "Deleted"
+	}
+	return "<UNSET>"
 }
 
 func CommentStatusFromString(s string) (CommentStatus, error) {
-  switch s {
-  case "Normal": return CommentStatus_Normal, nil 
-  case "Deleted": return CommentStatus_Deleted, nil 
-  }
-  return CommentStatus(0), fmt.Errorf("not a valid CommentStatus string")
+	switch s {
+	case "Normal":
+		return CommentStatus_Normal, nil
+	case "Deleted":
+		return CommentStatus_Deleted, nil
+	}
+	return CommentStatus(0), fmt.Errorf("not a valid CommentStatus string")
 }
-
 
 func CommentStatusPtr(v CommentStatus) *CommentStatus { return &v }
 
 func (p CommentStatus) MarshalText() ([]byte, error) {
-return []byte(p.String()), nil
+	return []byte(p.String()), nil
 }
 
 func (p *CommentStatus) UnmarshalText(text []byte) error {
-q, err := CommentStatusFromString(string(text))
-if (err != nil) {
-return err
-}
-*p = q
-return nil
+	q, err := CommentStatusFromString(string(text))
+	if err != nil {
+		return err
+	}
+	*p = q
+	return nil
 }
 
 func (p *CommentStatus) Scan(value interface{}) error {
-v, ok := value.(int64)
-if !ok {
-return errors.New("Scan value is not int64")
-}
-*p = CommentStatus(v)
-return nil
+	v, ok := value.(int64)
+	if !ok {
+		return errors.New("Scan value is not int64")
+	}
+	*p = CommentStatus(v)
+	return nil
 }
 
-func (p * CommentStatus) Value() (driver.Value, error) {
-  if p == nil {
-    return nil, nil
-  }
-return int64(*p), nil
+func (p *CommentStatus) Value() (driver.Value, error) {
+	if p == nil {
+		return nil, nil
+	}
+	return int64(*p), nil
 }
+
 // Attributes:
-//  - Amount
-//  - Base
+//   - Amount
+//   - Base
 type GenCommentIDRequest struct {
-  Amount *int8 `thrift:"amount,1" db:"amount" json:"amount,omitempty"`
-  // unused fields # 2 to 254
-  Base *base.RPCRequest `thrift:"Base,255" db:"Base" json:"Base,omitempty"`
+	Amount *int8 `thrift:"amount,1" db:"amount" json:"amount,omitempty"`
+	// unused fields # 2 to 254
+	Base *base.RPCRequest `thrift:"Base,255" db:"Base" json:"Base,omitempty"`
 }
 
 func NewGenCommentIDRequest() *GenCommentIDRequest {
-  return &GenCommentIDRequest{}
+	return &GenCommentIDRequest{}
 }
 
 var GenCommentIDRequest_Amount_DEFAULT int8
+
 func (p *GenCommentIDRequest) GetAmount() int8 {
-  if !p.IsSetAmount() {
-    return GenCommentIDRequest_Amount_DEFAULT
-  }
-return *p.Amount
+	if !p.IsSetAmount() {
+		return GenCommentIDRequest_Amount_DEFAULT
+	}
+	return *p.Amount
 }
+
 var GenCommentIDRequest_Base_DEFAULT *base.RPCRequest
+
 func (p *GenCommentIDRequest) GetBase() *base.RPCRequest {
-  if !p.IsSetBase() {
-    return GenCommentIDRequest_Base_DEFAULT
-  }
-return p.Base
+	if !p.IsSetBase() {
+		return GenCommentIDRequest_Base_DEFAULT
+	}
+	return p.Base
 }
 func (p *GenCommentIDRequest) IsSetAmount() bool {
-  return p.Amount != nil
+	return p.Amount != nil
 }
 
 func (p *GenCommentIDRequest) IsSetBase() bool {
-  return p.Base != nil
+	return p.Base != nil
 }
 
 func (p *GenCommentIDRequest) Read(ctx context.Context, iprot thrift.TProtocol) error {
-  if _, err := iprot.ReadStructBegin(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
-  }
+	if _, err := iprot.ReadStructBegin(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
+	}
 
-
-  for {
-    _, fieldTypeId, fieldId, err := iprot.ReadFieldBegin(ctx)
-    if err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
-    }
-    if fieldTypeId == thrift.STOP { break; }
-    switch fieldId {
-    case 1:
-      if fieldTypeId == thrift.BYTE {
-        if err := p.ReadField1(ctx, iprot); err != nil {
-          return err
-        }
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    case 255:
-      if fieldTypeId == thrift.STRUCT {
-        if err := p.ReadField255(ctx, iprot); err != nil {
-          return err
-        }
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    default:
-      if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-        return err
-      }
-    }
-    if err := iprot.ReadFieldEnd(ctx); err != nil {
-      return err
-    }
-  }
-  if err := iprot.ReadStructEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
-  }
-  return nil
+	for {
+		_, fieldTypeId, fieldId, err := iprot.ReadFieldBegin(ctx)
+		if err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.BYTE {
+				if err := p.ReadField1(ctx, iprot); err != nil {
+					return err
+				}
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		case 255:
+			if fieldTypeId == thrift.STRUCT {
+				if err := p.ReadField255(ctx, iprot); err != nil {
+					return err
+				}
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		default:
+			if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+				return err
+			}
+		}
+		if err := iprot.ReadFieldEnd(ctx); err != nil {
+			return err
+		}
+	}
+	if err := iprot.ReadStructEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+	}
+	return nil
 }
 
-func (p *GenCommentIDRequest)  ReadField1(ctx context.Context, iprot thrift.TProtocol) error {
-  if v, err := iprot.ReadByte(ctx); err != nil {
-  return thrift.PrependError("error reading field 1: ", err)
-} else {
-  temp := int8(v)
-  p.Amount = &temp
-}
-  return nil
+func (p *GenCommentIDRequest) ReadField1(ctx context.Context, iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadByte(ctx); err != nil {
+		return thrift.PrependError("error reading field 1: ", err)
+	} else {
+		temp := int8(v)
+		p.Amount = &temp
+	}
+	return nil
 }
 
-func (p *GenCommentIDRequest)  ReadField255(ctx context.Context, iprot thrift.TProtocol) error {
-  p.Base = &base.RPCRequest{}
-  if err := p.Base.Read(ctx, iprot); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", p.Base), err)
-  }
-  return nil
+func (p *GenCommentIDRequest) ReadField255(ctx context.Context, iprot thrift.TProtocol) error {
+	p.Base = &base.RPCRequest{}
+	if err := p.Base.Read(ctx, iprot); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", p.Base), err)
+	}
+	return nil
 }
 
 func (p *GenCommentIDRequest) Write(ctx context.Context, oprot thrift.TProtocol) error {
-  if err := oprot.WriteStructBegin(ctx, "GenCommentIDRequest"); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err) }
-  if p != nil {
-    if err := p.writeField1(ctx, oprot); err != nil { return err }
-    if err := p.writeField255(ctx, oprot); err != nil { return err }
-  }
-  if err := oprot.WriteFieldStop(ctx); err != nil {
-    return thrift.PrependError("write field stop error: ", err) }
-  if err := oprot.WriteStructEnd(ctx); err != nil {
-    return thrift.PrependError("write struct stop error: ", err) }
-  return nil
+	if err := oprot.WriteStructBegin(ctx, "GenCommentIDRequest"); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+	}
+	if p != nil {
+		if err := p.writeField1(ctx, oprot); err != nil {
+			return err
+		}
+		if err := p.writeField255(ctx, oprot); err != nil {
+			return err
+		}
+	}
+	if err := oprot.WriteFieldStop(ctx); err != nil {
+		return thrift.PrependError("write field stop error: ", err)
+	}
+	if err := oprot.WriteStructEnd(ctx); err != nil {
+		return thrift.PrependError("write struct stop error: ", err)
+	}
+	return nil
 }
 
 func (p *GenCommentIDRequest) writeField1(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if p.IsSetAmount() {
-    if err := oprot.WriteFieldBegin(ctx, "amount", thrift.BYTE, 1); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T write field begin error 1:amount: ", p), err) }
-    if err := oprot.WriteByte(ctx, int8(*p.Amount)); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T.amount (1) field write error: ", p), err) }
-    if err := oprot.WriteFieldEnd(ctx); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T write field end error 1:amount: ", p), err) }
-  }
-  return err
+	if p.IsSetAmount() {
+		if err := oprot.WriteFieldBegin(ctx, "amount", thrift.BYTE, 1); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field begin error 1:amount: ", p), err)
+		}
+		if err := oprot.WriteByte(ctx, int8(*p.Amount)); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T.amount (1) field write error: ", p), err)
+		}
+		if err := oprot.WriteFieldEnd(ctx); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field end error 1:amount: ", p), err)
+		}
+	}
+	return err
 }
 
 func (p *GenCommentIDRequest) writeField255(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if p.IsSetBase() {
-    if err := oprot.WriteFieldBegin(ctx, "Base", thrift.STRUCT, 255); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T write field begin error 255:Base: ", p), err) }
-    if err := p.Base.Write(ctx, oprot); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", p.Base), err)
-    }
-    if err := oprot.WriteFieldEnd(ctx); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T write field end error 255:Base: ", p), err) }
-  }
-  return err
+	if p.IsSetBase() {
+		if err := oprot.WriteFieldBegin(ctx, "Base", thrift.STRUCT, 255); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field begin error 255:Base: ", p), err)
+		}
+		if err := p.Base.Write(ctx, oprot); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", p.Base), err)
+		}
+		if err := oprot.WriteFieldEnd(ctx); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field end error 255:Base: ", p), err)
+		}
+	}
+	return err
 }
 
 func (p *GenCommentIDRequest) Equals(other *GenCommentIDRequest) bool {
-  if p == other {
-    return true
-  } else if p == nil || other == nil {
-    return false
-  }
-  if p.Amount != other.Amount {
-    if p.Amount == nil || other.Amount == nil {
-      return false
-    }
-    if (*p.Amount) != (*other.Amount) { return false }
-  }
-  if !p.Base.Equals(other.Base) { return false }
-  return true
+	if p == other {
+		return true
+	} else if p == nil || other == nil {
+		return false
+	}
+	if p.Amount != other.Amount {
+		if p.Amount == nil || other.Amount == nil {
+			return false
+		}
+		if (*p.Amount) != (*other.Amount) {
+			return false
+		}
+	}
+	if !p.Base.Equals(other.Base) {
+		return false
+	}
+	return true
 }
 
 func (p *GenCommentIDRequest) String() string {
-  if p == nil {
-    return "<nil>"
-  }
-  return fmt.Sprintf("GenCommentIDRequest(%+v)", *p)
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("GenCommentIDRequest(%+v)", *p)
 }
 
 // Attributes:
-//  - CommentIds
-//  - Base
+//   - CommentIds
+//   - Base
 type GenCommentIDResponse struct {
-  CommentIds []int64 `thrift:"comment_ids,1,required" db:"comment_ids" json:"comment_ids"`
-  // unused fields # 2 to 254
-  Base *base.RPCResponse `thrift:"Base,255,required" db:"Base" json:"Base"`
+	CommentIds []int64 `thrift:"comment_ids,1,required" db:"comment_ids" json:"comment_ids"`
+	// unused fields # 2 to 254
+	Base *base.RPCResponse `thrift:"Base,255,required" db:"Base" json:"Base"`
 }
 
 func NewGenCommentIDResponse() *GenCommentIDResponse {
-  return &GenCommentIDResponse{}
+	return &GenCommentIDResponse{}
 }
-
 
 func (p *GenCommentIDResponse) GetCommentIds() []int64 {
-  return p.CommentIds
+	return p.CommentIds
 }
+
 var GenCommentIDResponse_Base_DEFAULT *base.RPCResponse
+
 func (p *GenCommentIDResponse) GetBase() *base.RPCResponse {
-  if !p.IsSetBase() {
-    return GenCommentIDResponse_Base_DEFAULT
-  }
-return p.Base
+	if !p.IsSetBase() {
+		return GenCommentIDResponse_Base_DEFAULT
+	}
+	return p.Base
 }
 func (p *GenCommentIDResponse) IsSetBase() bool {
-  return p.Base != nil
+	return p.Base != nil
 }
 
 func (p *GenCommentIDResponse) Read(ctx context.Context, iprot thrift.TProtocol) error {
-  if _, err := iprot.ReadStructBegin(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
-  }
+	if _, err := iprot.ReadStructBegin(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
+	}
 
-  var issetCommentIds bool = false;
-  var issetBase bool = false;
+	var issetCommentIds bool = false
+	var issetBase bool = false
 
-  for {
-    _, fieldTypeId, fieldId, err := iprot.ReadFieldBegin(ctx)
-    if err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
-    }
-    if fieldTypeId == thrift.STOP { break; }
-    switch fieldId {
-    case 1:
-      if fieldTypeId == thrift.LIST {
-        if err := p.ReadField1(ctx, iprot); err != nil {
-          return err
-        }
-        issetCommentIds = true
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    case 255:
-      if fieldTypeId == thrift.STRUCT {
-        if err := p.ReadField255(ctx, iprot); err != nil {
-          return err
-        }
-        issetBase = true
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    default:
-      if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-        return err
-      }
-    }
-    if err := iprot.ReadFieldEnd(ctx); err != nil {
-      return err
-    }
-  }
-  if err := iprot.ReadStructEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
-  }
-  if !issetCommentIds{
-    return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field CommentIds is not set"));
-  }
-  if !issetBase{
-    return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field Base is not set"));
-  }
-  return nil
+	for {
+		_, fieldTypeId, fieldId, err := iprot.ReadFieldBegin(ctx)
+		if err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.LIST {
+				if err := p.ReadField1(ctx, iprot); err != nil {
+					return err
+				}
+				issetCommentIds = true
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		case 255:
+			if fieldTypeId == thrift.STRUCT {
+				if err := p.ReadField255(ctx, iprot); err != nil {
+					return err
+				}
+				issetBase = true
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		default:
+			if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+				return err
+			}
+		}
+		if err := iprot.ReadFieldEnd(ctx); err != nil {
+			return err
+		}
+	}
+	if err := iprot.ReadStructEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+	}
+	if !issetCommentIds {
+		return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field CommentIds is not set"))
+	}
+	if !issetBase {
+		return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field Base is not set"))
+	}
+	return nil
 }
 
-func (p *GenCommentIDResponse)  ReadField1(ctx context.Context, iprot thrift.TProtocol) error {
-  _, size, err := iprot.ReadListBegin(ctx)
-  if err != nil {
-    return thrift.PrependError("error reading list begin: ", err)
-  }
-  tSlice := make([]int64, 0, size)
-  p.CommentIds =  tSlice
-  for i := 0; i < size; i ++ {
-var _elem0 int64
-    if v, err := iprot.ReadI64(ctx); err != nil {
-    return thrift.PrependError("error reading field 0: ", err)
-} else {
-    _elem0 = v
-}
-    p.CommentIds = append(p.CommentIds, _elem0)
-  }
-  if err := iprot.ReadListEnd(ctx); err != nil {
-    return thrift.PrependError("error reading list end: ", err)
-  }
-  return nil
+func (p *GenCommentIDResponse) ReadField1(ctx context.Context, iprot thrift.TProtocol) error {
+	_, size, err := iprot.ReadListBegin(ctx)
+	if err != nil {
+		return thrift.PrependError("error reading list begin: ", err)
+	}
+	tSlice := make([]int64, 0, size)
+	p.CommentIds = tSlice
+	for i := 0; i < size; i++ {
+		var _elem0 int64
+		if v, err := iprot.ReadI64(ctx); err != nil {
+			return thrift.PrependError("error reading field 0: ", err)
+		} else {
+			_elem0 = v
+		}
+		p.CommentIds = append(p.CommentIds, _elem0)
+	}
+	if err := iprot.ReadListEnd(ctx); err != nil {
+		return thrift.PrependError("error reading list end: ", err)
+	}
+	return nil
 }
 
-func (p *GenCommentIDResponse)  ReadField255(ctx context.Context, iprot thrift.TProtocol) error {
-  p.Base = &base.RPCResponse{}
-  if err := p.Base.Read(ctx, iprot); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", p.Base), err)
-  }
-  return nil
+func (p *GenCommentIDResponse) ReadField255(ctx context.Context, iprot thrift.TProtocol) error {
+	p.Base = &base.RPCResponse{}
+	if err := p.Base.Read(ctx, iprot); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", p.Base), err)
+	}
+	return nil
 }
 
 func (p *GenCommentIDResponse) Write(ctx context.Context, oprot thrift.TProtocol) error {
-  if err := oprot.WriteStructBegin(ctx, "GenCommentIDResponse"); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err) }
-  if p != nil {
-    if err := p.writeField1(ctx, oprot); err != nil { return err }
-    if err := p.writeField255(ctx, oprot); err != nil { return err }
-  }
-  if err := oprot.WriteFieldStop(ctx); err != nil {
-    return thrift.PrependError("write field stop error: ", err) }
-  if err := oprot.WriteStructEnd(ctx); err != nil {
-    return thrift.PrependError("write struct stop error: ", err) }
-  return nil
+	if err := oprot.WriteStructBegin(ctx, "GenCommentIDResponse"); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+	}
+	if p != nil {
+		if err := p.writeField1(ctx, oprot); err != nil {
+			return err
+		}
+		if err := p.writeField255(ctx, oprot); err != nil {
+			return err
+		}
+	}
+	if err := oprot.WriteFieldStop(ctx); err != nil {
+		return thrift.PrependError("write field stop error: ", err)
+	}
+	if err := oprot.WriteStructEnd(ctx); err != nil {
+		return thrift.PrependError("write struct stop error: ", err)
+	}
+	return nil
 }
 
 func (p *GenCommentIDResponse) writeField1(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if err := oprot.WriteFieldBegin(ctx, "comment_ids", thrift.LIST, 1); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field begin error 1:comment_ids: ", p), err) }
-  if err := oprot.WriteListBegin(ctx, thrift.I64, len(p.CommentIds)); err != nil {
-    return thrift.PrependError("error writing list begin: ", err)
-  }
-  for _, v := range p.CommentIds {
-    if err := oprot.WriteI64(ctx, int64(v)); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T. (0) field write error: ", p), err) }
-  }
-  if err := oprot.WriteListEnd(ctx); err != nil {
-    return thrift.PrependError("error writing list end: ", err)
-  }
-  if err := oprot.WriteFieldEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field end error 1:comment_ids: ", p), err) }
-  return err
+	if err := oprot.WriteFieldBegin(ctx, "comment_ids", thrift.LIST, 1); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field begin error 1:comment_ids: ", p), err)
+	}
+	if err := oprot.WriteListBegin(ctx, thrift.I64, len(p.CommentIds)); err != nil {
+		return thrift.PrependError("error writing list begin: ", err)
+	}
+	for _, v := range p.CommentIds {
+		if err := oprot.WriteI64(ctx, int64(v)); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T. (0) field write error: ", p), err)
+		}
+	}
+	if err := oprot.WriteListEnd(ctx); err != nil {
+		return thrift.PrependError("error writing list end: ", err)
+	}
+	if err := oprot.WriteFieldEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field end error 1:comment_ids: ", p), err)
+	}
+	return err
 }
 
 func (p *GenCommentIDResponse) writeField255(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if err := oprot.WriteFieldBegin(ctx, "Base", thrift.STRUCT, 255); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field begin error 255:Base: ", p), err) }
-  if err := p.Base.Write(ctx, oprot); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", p.Base), err)
-  }
-  if err := oprot.WriteFieldEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field end error 255:Base: ", p), err) }
-  return err
+	if err := oprot.WriteFieldBegin(ctx, "Base", thrift.STRUCT, 255); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field begin error 255:Base: ", p), err)
+	}
+	if err := p.Base.Write(ctx, oprot); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", p.Base), err)
+	}
+	if err := oprot.WriteFieldEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field end error 255:Base: ", p), err)
+	}
+	return err
 }
 
 func (p *GenCommentIDResponse) Equals(other *GenCommentIDResponse) bool {
-  if p == other {
-    return true
-  } else if p == nil || other == nil {
-    return false
-  }
-  if len(p.CommentIds) != len(other.CommentIds) { return false }
-  for i, _tgt := range p.CommentIds {
-    _src1 := other.CommentIds[i]
-    if _tgt != _src1 { return false }
-  }
-  if !p.Base.Equals(other.Base) { return false }
-  return true
+	if p == other {
+		return true
+	} else if p == nil || other == nil {
+		return false
+	}
+	if len(p.CommentIds) != len(other.CommentIds) {
+		return false
+	}
+	for i, _tgt := range p.CommentIds {
+		_src1 := other.CommentIds[i]
+		if _tgt != _src1 {
+			return false
+		}
+	}
+	if !p.Base.Equals(other.Base) {
+		return false
+	}
+	return true
 }
 
 func (p *GenCommentIDResponse) String() string {
-  if p == nil {
-    return "<nil>"
-  }
-  return fmt.Sprintf("GenCommentIDResponse(%+v)", *p)
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("GenCommentIDResponse(%+v)", *p)
 }
 
 // Attributes:
-//  - CommentID
-//  - UserID
-//  - GroupID
-//  - AppID
-//  - Text
-//  - Images
-//  - Extra
-//  - Base
+//   - CommentID
+//   - UserID
+//   - GroupID
+//   - AppID
+//   - Text
+//   - Images
+//   - ReplyCommentID
+//   - Extra
+//   - Base
 type PostRequest struct {
-  CommentID *int64 `thrift:"comment_id,1" db:"comment_id" json:"comment_id,omitempty"`
-  UserID int64 `thrift:"user_id,2,required" db:"user_id" json:"user_id"`
-  GroupID int64 `thrift:"group_id,3,required" db:"group_id" json:"group_id"`
-  AppID int32 `thrift:"app_id,4,required" db:"app_id" json:"app_id"`
-  Text string `thrift:"text,5,required" db:"text" json:"text"`
-  Images []string `thrift:"images,6" db:"images" json:"images,omitempty"`
-  Extra *string `thrift:"extra,7" db:"extra" json:"extra,omitempty"`
-  // unused fields # 8 to 254
-  Base *base.RPCRequest `thrift:"Base,255" db:"Base" json:"Base,omitempty"`
+	CommentID      *int64   `thrift:"comment_id,1" db:"comment_id" json:"comment_id,omitempty"`
+	UserID         int64    `thrift:"user_id,2,required" db:"user_id" json:"user_id"`
+	GroupID        int64    `thrift:"group_id,3,required" db:"group_id" json:"group_id"`
+	AppID          int32    `thrift:"app_id,4,required" db:"app_id" json:"app_id"`
+	Text           string   `thrift:"text,5,required" db:"text" json:"text"`
+	Images         []string `thrift:"images,6" db:"images" json:"images,omitempty"`
+	ReplyCommentID *int64   `thrift:"reply_comment_id,7" db:"reply_comment_id" json:"reply_comment_id,omitempty"`
+	Extra          *string  `thrift:"extra,8" db:"extra" json:"extra,omitempty"`
+	// unused fields # 9 to 254
+	Base *base.RPCRequest `thrift:"Base,255" db:"Base" json:"Base,omitempty"`
 }
 
 func NewPostRequest() *PostRequest {
-  return &PostRequest{}
+	return &PostRequest{}
 }
 
 var PostRequest_CommentID_DEFAULT int64
+
 func (p *PostRequest) GetCommentID() int64 {
-  if !p.IsSetCommentID() {
-    return PostRequest_CommentID_DEFAULT
-  }
-return *p.CommentID
+	if !p.IsSetCommentID() {
+		return PostRequest_CommentID_DEFAULT
+	}
+	return *p.CommentID
 }
 
 func (p *PostRequest) GetUserID() int64 {
-  return p.UserID
+	return p.UserID
 }
 
 func (p *PostRequest) GetGroupID() int64 {
-  return p.GroupID
+	return p.GroupID
 }
 
 func (p *PostRequest) GetAppID() int32 {
-  return p.AppID
+	return p.AppID
 }
 
 func (p *PostRequest) GetText() string {
-  return p.Text
+	return p.Text
 }
+
 var PostRequest_Images_DEFAULT []string
 
 func (p *PostRequest) GetImages() []string {
-  return p.Images
+	return p.Images
 }
+
+var PostRequest_ReplyCommentID_DEFAULT int64
+
+func (p *PostRequest) GetReplyCommentID() int64 {
+	if !p.IsSetReplyCommentID() {
+		return PostRequest_ReplyCommentID_DEFAULT
+	}
+	return *p.ReplyCommentID
+}
+
 var PostRequest_Extra_DEFAULT string
+
 func (p *PostRequest) GetExtra() string {
-  if !p.IsSetExtra() {
-    return PostRequest_Extra_DEFAULT
-  }
-return *p.Extra
+	if !p.IsSetExtra() {
+		return PostRequest_Extra_DEFAULT
+	}
+	return *p.Extra
 }
+
 var PostRequest_Base_DEFAULT *base.RPCRequest
+
 func (p *PostRequest) GetBase() *base.RPCRequest {
-  if !p.IsSetBase() {
-    return PostRequest_Base_DEFAULT
-  }
-return p.Base
+	if !p.IsSetBase() {
+		return PostRequest_Base_DEFAULT
+	}
+	return p.Base
 }
 func (p *PostRequest) IsSetCommentID() bool {
-  return p.CommentID != nil
+	return p.CommentID != nil
 }
 
 func (p *PostRequest) IsSetImages() bool {
-  return p.Images != nil
+	return p.Images != nil
+}
+
+func (p *PostRequest) IsSetReplyCommentID() bool {
+	return p.ReplyCommentID != nil
 }
 
 func (p *PostRequest) IsSetExtra() bool {
-  return p.Extra != nil
+	return p.Extra != nil
 }
 
 func (p *PostRequest) IsSetBase() bool {
-  return p.Base != nil
+	return p.Base != nil
 }
 
 func (p *PostRequest) Read(ctx context.Context, iprot thrift.TProtocol) error {
-  if _, err := iprot.ReadStructBegin(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
-  }
+	if _, err := iprot.ReadStructBegin(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
+	}
 
-  var issetUserID bool = false;
-  var issetGroupID bool = false;
-  var issetAppID bool = false;
-  var issetText bool = false;
+	var issetUserID bool = false
+	var issetGroupID bool = false
+	var issetAppID bool = false
+	var issetText bool = false
 
-  for {
-    _, fieldTypeId, fieldId, err := iprot.ReadFieldBegin(ctx)
-    if err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
-    }
-    if fieldTypeId == thrift.STOP { break; }
-    switch fieldId {
-    case 1:
-      if fieldTypeId == thrift.I64 {
-        if err := p.ReadField1(ctx, iprot); err != nil {
-          return err
-        }
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    case 2:
-      if fieldTypeId == thrift.I64 {
-        if err := p.ReadField2(ctx, iprot); err != nil {
-          return err
-        }
-        issetUserID = true
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    case 3:
-      if fieldTypeId == thrift.I64 {
-        if err := p.ReadField3(ctx, iprot); err != nil {
-          return err
-        }
-        issetGroupID = true
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    case 4:
-      if fieldTypeId == thrift.I32 {
-        if err := p.ReadField4(ctx, iprot); err != nil {
-          return err
-        }
-        issetAppID = true
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    case 5:
-      if fieldTypeId == thrift.STRING {
-        if err := p.ReadField5(ctx, iprot); err != nil {
-          return err
-        }
-        issetText = true
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    case 6:
-      if fieldTypeId == thrift.LIST {
-        if err := p.ReadField6(ctx, iprot); err != nil {
-          return err
-        }
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    case 7:
-      if fieldTypeId == thrift.STRING {
-        if err := p.ReadField7(ctx, iprot); err != nil {
-          return err
-        }
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    case 255:
-      if fieldTypeId == thrift.STRUCT {
-        if err := p.ReadField255(ctx, iprot); err != nil {
-          return err
-        }
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    default:
-      if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-        return err
-      }
-    }
-    if err := iprot.ReadFieldEnd(ctx); err != nil {
-      return err
-    }
-  }
-  if err := iprot.ReadStructEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
-  }
-  if !issetUserID{
-    return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field UserID is not set"));
-  }
-  if !issetGroupID{
-    return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field GroupID is not set"));
-  }
-  if !issetAppID{
-    return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field AppID is not set"));
-  }
-  if !issetText{
-    return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field Text is not set"));
-  }
-  return nil
-}
-
-func (p *PostRequest)  ReadField1(ctx context.Context, iprot thrift.TProtocol) error {
-  if v, err := iprot.ReadI64(ctx); err != nil {
-  return thrift.PrependError("error reading field 1: ", err)
-} else {
-  p.CommentID = &v
-}
-  return nil
-}
-
-func (p *PostRequest)  ReadField2(ctx context.Context, iprot thrift.TProtocol) error {
-  if v, err := iprot.ReadI64(ctx); err != nil {
-  return thrift.PrependError("error reading field 2: ", err)
-} else {
-  p.UserID = v
-}
-  return nil
+	for {
+		_, fieldTypeId, fieldId, err := iprot.ReadFieldBegin(ctx)
+		if err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.I64 {
+				if err := p.ReadField1(ctx, iprot); err != nil {
+					return err
+				}
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		case 2:
+			if fieldTypeId == thrift.I64 {
+				if err := p.ReadField2(ctx, iprot); err != nil {
+					return err
+				}
+				issetUserID = true
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		case 3:
+			if fieldTypeId == thrift.I64 {
+				if err := p.ReadField3(ctx, iprot); err != nil {
+					return err
+				}
+				issetGroupID = true
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		case 4:
+			if fieldTypeId == thrift.I32 {
+				if err := p.ReadField4(ctx, iprot); err != nil {
+					return err
+				}
+				issetAppID = true
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		case 5:
+			if fieldTypeId == thrift.STRING {
+				if err := p.ReadField5(ctx, iprot); err != nil {
+					return err
+				}
+				issetText = true
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		case 6:
+			if fieldTypeId == thrift.LIST {
+				if err := p.ReadField6(ctx, iprot); err != nil {
+					return err
+				}
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		case 7:
+			if fieldTypeId == thrift.I64 {
+				if err := p.ReadField7(ctx, iprot); err != nil {
+					return err
+				}
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		case 8:
+			if fieldTypeId == thrift.STRING {
+				if err := p.ReadField8(ctx, iprot); err != nil {
+					return err
+				}
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		case 255:
+			if fieldTypeId == thrift.STRUCT {
+				if err := p.ReadField255(ctx, iprot); err != nil {
+					return err
+				}
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		default:
+			if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+				return err
+			}
+		}
+		if err := iprot.ReadFieldEnd(ctx); err != nil {
+			return err
+		}
+	}
+	if err := iprot.ReadStructEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+	}
+	if !issetUserID {
+		return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field UserID is not set"))
+	}
+	if !issetGroupID {
+		return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field GroupID is not set"))
+	}
+	if !issetAppID {
+		return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field AppID is not set"))
+	}
+	if !issetText {
+		return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field Text is not set"))
+	}
+	return nil
 }
 
-func (p *PostRequest)  ReadField3(ctx context.Context, iprot thrift.TProtocol) error {
-  if v, err := iprot.ReadI64(ctx); err != nil {
-  return thrift.PrependError("error reading field 3: ", err)
-} else {
-  p.GroupID = v
-}
-  return nil
-}
-
-func (p *PostRequest)  ReadField4(ctx context.Context, iprot thrift.TProtocol) error {
-  if v, err := iprot.ReadI32(ctx); err != nil {
-  return thrift.PrependError("error reading field 4: ", err)
-} else {
-  p.AppID = v
-}
-  return nil
+func (p *PostRequest) ReadField1(ctx context.Context, iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(ctx); err != nil {
+		return thrift.PrependError("error reading field 1: ", err)
+	} else {
+		p.CommentID = &v
+	}
+	return nil
 }
 
-func (p *PostRequest)  ReadField5(ctx context.Context, iprot thrift.TProtocol) error {
-  if v, err := iprot.ReadString(ctx); err != nil {
-  return thrift.PrependError("error reading field 5: ", err)
-} else {
-  p.Text = v
-}
-  return nil
-}
-
-func (p *PostRequest)  ReadField6(ctx context.Context, iprot thrift.TProtocol) error {
-  _, size, err := iprot.ReadListBegin(ctx)
-  if err != nil {
-    return thrift.PrependError("error reading list begin: ", err)
-  }
-  tSlice := make([]string, 0, size)
-  p.Images =  tSlice
-  for i := 0; i < size; i ++ {
-var _elem2 string
-    if v, err := iprot.ReadString(ctx); err != nil {
-    return thrift.PrependError("error reading field 0: ", err)
-} else {
-    _elem2 = v
-}
-    p.Images = append(p.Images, _elem2)
-  }
-  if err := iprot.ReadListEnd(ctx); err != nil {
-    return thrift.PrependError("error reading list end: ", err)
-  }
-  return nil
+func (p *PostRequest) ReadField2(ctx context.Context, iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(ctx); err != nil {
+		return thrift.PrependError("error reading field 2: ", err)
+	} else {
+		p.UserID = v
+	}
+	return nil
 }
 
-func (p *PostRequest)  ReadField7(ctx context.Context, iprot thrift.TProtocol) error {
-  if v, err := iprot.ReadString(ctx); err != nil {
-  return thrift.PrependError("error reading field 7: ", err)
-} else {
-  p.Extra = &v
-}
-  return nil
+func (p *PostRequest) ReadField3(ctx context.Context, iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(ctx); err != nil {
+		return thrift.PrependError("error reading field 3: ", err)
+	} else {
+		p.GroupID = v
+	}
+	return nil
 }
 
-func (p *PostRequest)  ReadField255(ctx context.Context, iprot thrift.TProtocol) error {
-  p.Base = &base.RPCRequest{}
-  if err := p.Base.Read(ctx, iprot); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", p.Base), err)
-  }
-  return nil
+func (p *PostRequest) ReadField4(ctx context.Context, iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI32(ctx); err != nil {
+		return thrift.PrependError("error reading field 4: ", err)
+	} else {
+		p.AppID = v
+	}
+	return nil
+}
+
+func (p *PostRequest) ReadField5(ctx context.Context, iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadString(ctx); err != nil {
+		return thrift.PrependError("error reading field 5: ", err)
+	} else {
+		p.Text = v
+	}
+	return nil
+}
+
+func (p *PostRequest) ReadField6(ctx context.Context, iprot thrift.TProtocol) error {
+	_, size, err := iprot.ReadListBegin(ctx)
+	if err != nil {
+		return thrift.PrependError("error reading list begin: ", err)
+	}
+	tSlice := make([]string, 0, size)
+	p.Images = tSlice
+	for i := 0; i < size; i++ {
+		var _elem2 string
+		if v, err := iprot.ReadString(ctx); err != nil {
+			return thrift.PrependError("error reading field 0: ", err)
+		} else {
+			_elem2 = v
+		}
+		p.Images = append(p.Images, _elem2)
+	}
+	if err := iprot.ReadListEnd(ctx); err != nil {
+		return thrift.PrependError("error reading list end: ", err)
+	}
+	return nil
+}
+
+func (p *PostRequest) ReadField7(ctx context.Context, iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(ctx); err != nil {
+		return thrift.PrependError("error reading field 7: ", err)
+	} else {
+		p.ReplyCommentID = &v
+	}
+	return nil
+}
+
+func (p *PostRequest) ReadField8(ctx context.Context, iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadString(ctx); err != nil {
+		return thrift.PrependError("error reading field 8: ", err)
+	} else {
+		p.Extra = &v
+	}
+	return nil
+}
+
+func (p *PostRequest) ReadField255(ctx context.Context, iprot thrift.TProtocol) error {
+	p.Base = &base.RPCRequest{}
+	if err := p.Base.Read(ctx, iprot); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", p.Base), err)
+	}
+	return nil
 }
 
 func (p *PostRequest) Write(ctx context.Context, oprot thrift.TProtocol) error {
-  if err := oprot.WriteStructBegin(ctx, "PostRequest"); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err) }
-  if p != nil {
-    if err := p.writeField1(ctx, oprot); err != nil { return err }
-    if err := p.writeField2(ctx, oprot); err != nil { return err }
-    if err := p.writeField3(ctx, oprot); err != nil { return err }
-    if err := p.writeField4(ctx, oprot); err != nil { return err }
-    if err := p.writeField5(ctx, oprot); err != nil { return err }
-    if err := p.writeField6(ctx, oprot); err != nil { return err }
-    if err := p.writeField7(ctx, oprot); err != nil { return err }
-    if err := p.writeField255(ctx, oprot); err != nil { return err }
-  }
-  if err := oprot.WriteFieldStop(ctx); err != nil {
-    return thrift.PrependError("write field stop error: ", err) }
-  if err := oprot.WriteStructEnd(ctx); err != nil {
-    return thrift.PrependError("write struct stop error: ", err) }
-  return nil
+	if err := oprot.WriteStructBegin(ctx, "PostRequest"); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+	}
+	if p != nil {
+		if err := p.writeField1(ctx, oprot); err != nil {
+			return err
+		}
+		if err := p.writeField2(ctx, oprot); err != nil {
+			return err
+		}
+		if err := p.writeField3(ctx, oprot); err != nil {
+			return err
+		}
+		if err := p.writeField4(ctx, oprot); err != nil {
+			return err
+		}
+		if err := p.writeField5(ctx, oprot); err != nil {
+			return err
+		}
+		if err := p.writeField6(ctx, oprot); err != nil {
+			return err
+		}
+		if err := p.writeField7(ctx, oprot); err != nil {
+			return err
+		}
+		if err := p.writeField8(ctx, oprot); err != nil {
+			return err
+		}
+		if err := p.writeField255(ctx, oprot); err != nil {
+			return err
+		}
+	}
+	if err := oprot.WriteFieldStop(ctx); err != nil {
+		return thrift.PrependError("write field stop error: ", err)
+	}
+	if err := oprot.WriteStructEnd(ctx); err != nil {
+		return thrift.PrependError("write struct stop error: ", err)
+	}
+	return nil
 }
 
 func (p *PostRequest) writeField1(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if p.IsSetCommentID() {
-    if err := oprot.WriteFieldBegin(ctx, "comment_id", thrift.I64, 1); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T write field begin error 1:comment_id: ", p), err) }
-    if err := oprot.WriteI64(ctx, int64(*p.CommentID)); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T.comment_id (1) field write error: ", p), err) }
-    if err := oprot.WriteFieldEnd(ctx); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T write field end error 1:comment_id: ", p), err) }
-  }
-  return err
+	if p.IsSetCommentID() {
+		if err := oprot.WriteFieldBegin(ctx, "comment_id", thrift.I64, 1); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field begin error 1:comment_id: ", p), err)
+		}
+		if err := oprot.WriteI64(ctx, int64(*p.CommentID)); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T.comment_id (1) field write error: ", p), err)
+		}
+		if err := oprot.WriteFieldEnd(ctx); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field end error 1:comment_id: ", p), err)
+		}
+	}
+	return err
 }
 
 func (p *PostRequest) writeField2(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if err := oprot.WriteFieldBegin(ctx, "user_id", thrift.I64, 2); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field begin error 2:user_id: ", p), err) }
-  if err := oprot.WriteI64(ctx, int64(p.UserID)); err != nil {
-  return thrift.PrependError(fmt.Sprintf("%T.user_id (2) field write error: ", p), err) }
-  if err := oprot.WriteFieldEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field end error 2:user_id: ", p), err) }
-  return err
+	if err := oprot.WriteFieldBegin(ctx, "user_id", thrift.I64, 2); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field begin error 2:user_id: ", p), err)
+	}
+	if err := oprot.WriteI64(ctx, int64(p.UserID)); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T.user_id (2) field write error: ", p), err)
+	}
+	if err := oprot.WriteFieldEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field end error 2:user_id: ", p), err)
+	}
+	return err
 }
 
 func (p *PostRequest) writeField3(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if err := oprot.WriteFieldBegin(ctx, "group_id", thrift.I64, 3); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field begin error 3:group_id: ", p), err) }
-  if err := oprot.WriteI64(ctx, int64(p.GroupID)); err != nil {
-  return thrift.PrependError(fmt.Sprintf("%T.group_id (3) field write error: ", p), err) }
-  if err := oprot.WriteFieldEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field end error 3:group_id: ", p), err) }
-  return err
+	if err := oprot.WriteFieldBegin(ctx, "group_id", thrift.I64, 3); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field begin error 3:group_id: ", p), err)
+	}
+	if err := oprot.WriteI64(ctx, int64(p.GroupID)); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T.group_id (3) field write error: ", p), err)
+	}
+	if err := oprot.WriteFieldEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field end error 3:group_id: ", p), err)
+	}
+	return err
 }
 
 func (p *PostRequest) writeField4(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if err := oprot.WriteFieldBegin(ctx, "app_id", thrift.I32, 4); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field begin error 4:app_id: ", p), err) }
-  if err := oprot.WriteI32(ctx, int32(p.AppID)); err != nil {
-  return thrift.PrependError(fmt.Sprintf("%T.app_id (4) field write error: ", p), err) }
-  if err := oprot.WriteFieldEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field end error 4:app_id: ", p), err) }
-  return err
+	if err := oprot.WriteFieldBegin(ctx, "app_id", thrift.I32, 4); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field begin error 4:app_id: ", p), err)
+	}
+	if err := oprot.WriteI32(ctx, int32(p.AppID)); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T.app_id (4) field write error: ", p), err)
+	}
+	if err := oprot.WriteFieldEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field end error 4:app_id: ", p), err)
+	}
+	return err
 }
 
 func (p *PostRequest) writeField5(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if err := oprot.WriteFieldBegin(ctx, "text", thrift.STRING, 5); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field begin error 5:text: ", p), err) }
-  if err := oprot.WriteString(ctx, string(p.Text)); err != nil {
-  return thrift.PrependError(fmt.Sprintf("%T.text (5) field write error: ", p), err) }
-  if err := oprot.WriteFieldEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field end error 5:text: ", p), err) }
-  return err
+	if err := oprot.WriteFieldBegin(ctx, "text", thrift.STRING, 5); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field begin error 5:text: ", p), err)
+	}
+	if err := oprot.WriteString(ctx, string(p.Text)); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T.text (5) field write error: ", p), err)
+	}
+	if err := oprot.WriteFieldEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field end error 5:text: ", p), err)
+	}
+	return err
 }
 
 func (p *PostRequest) writeField6(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if p.IsSetImages() {
-    if err := oprot.WriteFieldBegin(ctx, "images", thrift.LIST, 6); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T write field begin error 6:images: ", p), err) }
-    if err := oprot.WriteListBegin(ctx, thrift.STRING, len(p.Images)); err != nil {
-      return thrift.PrependError("error writing list begin: ", err)
-    }
-    for _, v := range p.Images {
-      if err := oprot.WriteString(ctx, string(v)); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T. (0) field write error: ", p), err) }
-    }
-    if err := oprot.WriteListEnd(ctx); err != nil {
-      return thrift.PrependError("error writing list end: ", err)
-    }
-    if err := oprot.WriteFieldEnd(ctx); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T write field end error 6:images: ", p), err) }
-  }
-  return err
+	if p.IsSetImages() {
+		if err := oprot.WriteFieldBegin(ctx, "images", thrift.LIST, 6); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field begin error 6:images: ", p), err)
+		}
+		if err := oprot.WriteListBegin(ctx, thrift.STRING, len(p.Images)); err != nil {
+			return thrift.PrependError("error writing list begin: ", err)
+		}
+		for _, v := range p.Images {
+			if err := oprot.WriteString(ctx, string(v)); err != nil {
+				return thrift.PrependError(fmt.Sprintf("%T. (0) field write error: ", p), err)
+			}
+		}
+		if err := oprot.WriteListEnd(ctx); err != nil {
+			return thrift.PrependError("error writing list end: ", err)
+		}
+		if err := oprot.WriteFieldEnd(ctx); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field end error 6:images: ", p), err)
+		}
+	}
+	return err
 }
 
 func (p *PostRequest) writeField7(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if p.IsSetExtra() {
-    if err := oprot.WriteFieldBegin(ctx, "extra", thrift.STRING, 7); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T write field begin error 7:extra: ", p), err) }
-    if err := oprot.WriteString(ctx, string(*p.Extra)); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T.extra (7) field write error: ", p), err) }
-    if err := oprot.WriteFieldEnd(ctx); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T write field end error 7:extra: ", p), err) }
-  }
-  return err
+	if p.IsSetReplyCommentID() {
+		if err := oprot.WriteFieldBegin(ctx, "reply_comment_id", thrift.I64, 7); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field begin error 7:reply_comment_id: ", p), err)
+		}
+		if err := oprot.WriteI64(ctx, int64(*p.ReplyCommentID)); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T.reply_comment_id (7) field write error: ", p), err)
+		}
+		if err := oprot.WriteFieldEnd(ctx); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field end error 7:reply_comment_id: ", p), err)
+		}
+	}
+	return err
+}
+
+func (p *PostRequest) writeField8(ctx context.Context, oprot thrift.TProtocol) (err error) {
+	if p.IsSetExtra() {
+		if err := oprot.WriteFieldBegin(ctx, "extra", thrift.STRING, 8); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field begin error 8:extra: ", p), err)
+		}
+		if err := oprot.WriteString(ctx, string(*p.Extra)); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T.extra (8) field write error: ", p), err)
+		}
+		if err := oprot.WriteFieldEnd(ctx); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field end error 8:extra: ", p), err)
+		}
+	}
+	return err
 }
 
 func (p *PostRequest) writeField255(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if p.IsSetBase() {
-    if err := oprot.WriteFieldBegin(ctx, "Base", thrift.STRUCT, 255); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T write field begin error 255:Base: ", p), err) }
-    if err := p.Base.Write(ctx, oprot); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", p.Base), err)
-    }
-    if err := oprot.WriteFieldEnd(ctx); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T write field end error 255:Base: ", p), err) }
-  }
-  return err
+	if p.IsSetBase() {
+		if err := oprot.WriteFieldBegin(ctx, "Base", thrift.STRUCT, 255); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field begin error 255:Base: ", p), err)
+		}
+		if err := p.Base.Write(ctx, oprot); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", p.Base), err)
+		}
+		if err := oprot.WriteFieldEnd(ctx); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field end error 255:Base: ", p), err)
+		}
+	}
+	return err
 }
 
 func (p *PostRequest) Equals(other *PostRequest) bool {
-  if p == other {
-    return true
-  } else if p == nil || other == nil {
-    return false
-  }
-  if p.CommentID != other.CommentID {
-    if p.CommentID == nil || other.CommentID == nil {
-      return false
-    }
-    if (*p.CommentID) != (*other.CommentID) { return false }
-  }
-  if p.UserID != other.UserID { return false }
-  if p.GroupID != other.GroupID { return false }
-  if p.AppID != other.AppID { return false }
-  if p.Text != other.Text { return false }
-  if len(p.Images) != len(other.Images) { return false }
-  for i, _tgt := range p.Images {
-    _src3 := other.Images[i]
-    if _tgt != _src3 { return false }
-  }
-  if p.Extra != other.Extra {
-    if p.Extra == nil || other.Extra == nil {
-      return false
-    }
-    if (*p.Extra) != (*other.Extra) { return false }
-  }
-  if !p.Base.Equals(other.Base) { return false }
-  return true
+	if p == other {
+		return true
+	} else if p == nil || other == nil {
+		return false
+	}
+	if p.CommentID != other.CommentID {
+		if p.CommentID == nil || other.CommentID == nil {
+			return false
+		}
+		if (*p.CommentID) != (*other.CommentID) {
+			return false
+		}
+	}
+	if p.UserID != other.UserID {
+		return false
+	}
+	if p.GroupID != other.GroupID {
+		return false
+	}
+	if p.AppID != other.AppID {
+		return false
+	}
+	if p.Text != other.Text {
+		return false
+	}
+	if len(p.Images) != len(other.Images) {
+		return false
+	}
+	for i, _tgt := range p.Images {
+		_src3 := other.Images[i]
+		if _tgt != _src3 {
+			return false
+		}
+	}
+	if p.ReplyCommentID != other.ReplyCommentID {
+		if p.ReplyCommentID == nil || other.ReplyCommentID == nil {
+			return false
+		}
+		if (*p.ReplyCommentID) != (*other.ReplyCommentID) {
+			return false
+		}
+	}
+	if p.Extra != other.Extra {
+		if p.Extra == nil || other.Extra == nil {
+			return false
+		}
+		if (*p.Extra) != (*other.Extra) {
+			return false
+		}
+	}
+	if !p.Base.Equals(other.Base) {
+		return false
+	}
+	return true
 }
 
 func (p *PostRequest) String() string {
-  if p == nil {
-    return "<nil>"
-  }
-  return fmt.Sprintf("PostRequest(%+v)", *p)
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("PostRequest(%+v)", *p)
 }
 
 // Attributes:
-//  - CommentID
-//  - Base
+//   - CommentData
+//   - Base
 type PostResponse struct {
-  CommentID int64 `thrift:"comment_id,1,required" db:"comment_id" json:"comment_id"`
-  // unused fields # 2 to 254
-  Base *base.RPCResponse `thrift:"Base,255,required" db:"Base" json:"Base"`
+	CommentData *CommentData `thrift:"comment_data,1" db:"comment_data" json:"comment_data,omitempty"`
+	// unused fields # 2 to 254
+	Base *base.RPCResponse `thrift:"Base,255,required" db:"Base" json:"Base"`
 }
 
 func NewPostResponse() *PostResponse {
-  return &PostResponse{}
+	return &PostResponse{}
 }
 
+var PostResponse_CommentData_DEFAULT *CommentData
 
-func (p *PostResponse) GetCommentID() int64 {
-  return p.CommentID
+func (p *PostResponse) GetCommentData() *CommentData {
+	if !p.IsSetCommentData() {
+		return PostResponse_CommentData_DEFAULT
+	}
+	return p.CommentData
 }
+
 var PostResponse_Base_DEFAULT *base.RPCResponse
+
 func (p *PostResponse) GetBase() *base.RPCResponse {
-  if !p.IsSetBase() {
-    return PostResponse_Base_DEFAULT
-  }
-return p.Base
+	if !p.IsSetBase() {
+		return PostResponse_Base_DEFAULT
+	}
+	return p.Base
 }
+func (p *PostResponse) IsSetCommentData() bool {
+	return p.CommentData != nil
+}
+
 func (p *PostResponse) IsSetBase() bool {
-  return p.Base != nil
+	return p.Base != nil
 }
 
 func (p *PostResponse) Read(ctx context.Context, iprot thrift.TProtocol) error {
-  if _, err := iprot.ReadStructBegin(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
-  }
+	if _, err := iprot.ReadStructBegin(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
+	}
 
-  var issetCommentID bool = false;
-  var issetBase bool = false;
+	var issetBase bool = false
 
-  for {
-    _, fieldTypeId, fieldId, err := iprot.ReadFieldBegin(ctx)
-    if err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
-    }
-    if fieldTypeId == thrift.STOP { break; }
-    switch fieldId {
-    case 1:
-      if fieldTypeId == thrift.I64 {
-        if err := p.ReadField1(ctx, iprot); err != nil {
-          return err
-        }
-        issetCommentID = true
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    case 255:
-      if fieldTypeId == thrift.STRUCT {
-        if err := p.ReadField255(ctx, iprot); err != nil {
-          return err
-        }
-        issetBase = true
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    default:
-      if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-        return err
-      }
-    }
-    if err := iprot.ReadFieldEnd(ctx); err != nil {
-      return err
-    }
-  }
-  if err := iprot.ReadStructEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
-  }
-  if !issetCommentID{
-    return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field CommentID is not set"));
-  }
-  if !issetBase{
-    return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field Base is not set"));
-  }
-  return nil
+	for {
+		_, fieldTypeId, fieldId, err := iprot.ReadFieldBegin(ctx)
+		if err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.STRUCT {
+				if err := p.ReadField1(ctx, iprot); err != nil {
+					return err
+				}
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		case 255:
+			if fieldTypeId == thrift.STRUCT {
+				if err := p.ReadField255(ctx, iprot); err != nil {
+					return err
+				}
+				issetBase = true
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		default:
+			if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+				return err
+			}
+		}
+		if err := iprot.ReadFieldEnd(ctx); err != nil {
+			return err
+		}
+	}
+	if err := iprot.ReadStructEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+	}
+	if !issetBase {
+		return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field Base is not set"))
+	}
+	return nil
 }
 
-func (p *PostResponse)  ReadField1(ctx context.Context, iprot thrift.TProtocol) error {
-  if v, err := iprot.ReadI64(ctx); err != nil {
-  return thrift.PrependError("error reading field 1: ", err)
-} else {
-  p.CommentID = v
-}
-  return nil
+func (p *PostResponse) ReadField1(ctx context.Context, iprot thrift.TProtocol) error {
+	p.CommentData = &CommentData{}
+	if err := p.CommentData.Read(ctx, iprot); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", p.CommentData), err)
+	}
+	return nil
 }
 
-func (p *PostResponse)  ReadField255(ctx context.Context, iprot thrift.TProtocol) error {
-  p.Base = &base.RPCResponse{}
-  if err := p.Base.Read(ctx, iprot); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", p.Base), err)
-  }
-  return nil
+func (p *PostResponse) ReadField255(ctx context.Context, iprot thrift.TProtocol) error {
+	p.Base = &base.RPCResponse{}
+	if err := p.Base.Read(ctx, iprot); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", p.Base), err)
+	}
+	return nil
 }
 
 func (p *PostResponse) Write(ctx context.Context, oprot thrift.TProtocol) error {
-  if err := oprot.WriteStructBegin(ctx, "PostResponse"); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err) }
-  if p != nil {
-    if err := p.writeField1(ctx, oprot); err != nil { return err }
-    if err := p.writeField255(ctx, oprot); err != nil { return err }
-  }
-  if err := oprot.WriteFieldStop(ctx); err != nil {
-    return thrift.PrependError("write field stop error: ", err) }
-  if err := oprot.WriteStructEnd(ctx); err != nil {
-    return thrift.PrependError("write struct stop error: ", err) }
-  return nil
+	if err := oprot.WriteStructBegin(ctx, "PostResponse"); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+	}
+	if p != nil {
+		if err := p.writeField1(ctx, oprot); err != nil {
+			return err
+		}
+		if err := p.writeField255(ctx, oprot); err != nil {
+			return err
+		}
+	}
+	if err := oprot.WriteFieldStop(ctx); err != nil {
+		return thrift.PrependError("write field stop error: ", err)
+	}
+	if err := oprot.WriteStructEnd(ctx); err != nil {
+		return thrift.PrependError("write struct stop error: ", err)
+	}
+	return nil
 }
 
 func (p *PostResponse) writeField1(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if err := oprot.WriteFieldBegin(ctx, "comment_id", thrift.I64, 1); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field begin error 1:comment_id: ", p), err) }
-  if err := oprot.WriteI64(ctx, int64(p.CommentID)); err != nil {
-  return thrift.PrependError(fmt.Sprintf("%T.comment_id (1) field write error: ", p), err) }
-  if err := oprot.WriteFieldEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field end error 1:comment_id: ", p), err) }
-  return err
+	if p.IsSetCommentData() {
+		if err := oprot.WriteFieldBegin(ctx, "comment_data", thrift.STRUCT, 1); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field begin error 1:comment_data: ", p), err)
+		}
+		if err := p.CommentData.Write(ctx, oprot); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", p.CommentData), err)
+		}
+		if err := oprot.WriteFieldEnd(ctx); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field end error 1:comment_data: ", p), err)
+		}
+	}
+	return err
 }
 
 func (p *PostResponse) writeField255(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if err := oprot.WriteFieldBegin(ctx, "Base", thrift.STRUCT, 255); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field begin error 255:Base: ", p), err) }
-  if err := p.Base.Write(ctx, oprot); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", p.Base), err)
-  }
-  if err := oprot.WriteFieldEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field end error 255:Base: ", p), err) }
-  return err
+	if err := oprot.WriteFieldBegin(ctx, "Base", thrift.STRUCT, 255); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field begin error 255:Base: ", p), err)
+	}
+	if err := p.Base.Write(ctx, oprot); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", p.Base), err)
+	}
+	if err := oprot.WriteFieldEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field end error 255:Base: ", p), err)
+	}
+	return err
 }
 
 func (p *PostResponse) Equals(other *PostResponse) bool {
-  if p == other {
-    return true
-  } else if p == nil || other == nil {
-    return false
-  }
-  if p.CommentID != other.CommentID { return false }
-  if !p.Base.Equals(other.Base) { return false }
-  return true
+	if p == other {
+		return true
+	} else if p == nil || other == nil {
+		return false
+	}
+	if !p.CommentData.Equals(other.CommentData) {
+		return false
+	}
+	if !p.Base.Equals(other.Base) {
+		return false
+	}
+	return true
 }
 
 func (p *PostResponse) String() string {
-  if p == nil {
-    return "<nil>"
-  }
-  return fmt.Sprintf("PostResponse(%+v)", *p)
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("PostResponse(%+v)", *p)
 }
 
 // Attributes:
-//  - CommentID
-//  - UserID
-//  - GroupID
-//  - AppID
-//  - CreatedAt
-//  - Offset
-//  - Limit
-//  - Base
+//   - CommentID
+//   - UserID
+//   - GroupID
+//   - AppID
+//   - CreatedAt
+//   - Offset
+//   - Limit
+//   - Base
 type ListRequest struct {
-  CommentID *int64 `thrift:"comment_id,1" db:"comment_id" json:"comment_id,omitempty"`
-  UserID *int64 `thrift:"user_id,2" db:"user_id" json:"user_id,omitempty"`
-  GroupID *int64 `thrift:"group_id,3" db:"group_id" json:"group_id,omitempty"`
-  AppID *int32 `thrift:"app_id,4" db:"app_id" json:"app_id,omitempty"`
-  CreatedAt *TimeRange `thrift:"created_at,5" db:"created_at" json:"created_at,omitempty"`
-  Offset int64 `thrift:"offset,6,required" db:"offset" json:"offset"`
-  Limit int32 `thrift:"limit,7,required" db:"limit" json:"limit"`
-  // unused fields # 8 to 254
-  Base *base.RPCRequest `thrift:"Base,255" db:"Base" json:"Base,omitempty"`
+	CommentID *int64     `thrift:"comment_id,1" db:"comment_id" json:"comment_id,omitempty"`
+	UserID    *int64     `thrift:"user_id,2" db:"user_id" json:"user_id,omitempty"`
+	GroupID   *int64     `thrift:"group_id,3" db:"group_id" json:"group_id,omitempty"`
+	AppID     *int32     `thrift:"app_id,4" db:"app_id" json:"app_id,omitempty"`
+	CreatedAt *TimeRange `thrift:"created_at,5" db:"created_at" json:"created_at,omitempty"`
+	Offset    int64      `thrift:"offset,6,required" db:"offset" json:"offset"`
+	Limit     int32      `thrift:"limit,7,required" db:"limit" json:"limit"`
+	// unused fields # 8 to 254
+	Base *base.RPCRequest `thrift:"Base,255" db:"Base" json:"Base,omitempty"`
 }
 
 func NewListRequest() *ListRequest {
-  return &ListRequest{}
+	return &ListRequest{}
 }
 
 var ListRequest_CommentID_DEFAULT int64
+
 func (p *ListRequest) GetCommentID() int64 {
-  if !p.IsSetCommentID() {
-    return ListRequest_CommentID_DEFAULT
-  }
-return *p.CommentID
+	if !p.IsSetCommentID() {
+		return ListRequest_CommentID_DEFAULT
+	}
+	return *p.CommentID
 }
+
 var ListRequest_UserID_DEFAULT int64
+
 func (p *ListRequest) GetUserID() int64 {
-  if !p.IsSetUserID() {
-    return ListRequest_UserID_DEFAULT
-  }
-return *p.UserID
+	if !p.IsSetUserID() {
+		return ListRequest_UserID_DEFAULT
+	}
+	return *p.UserID
 }
+
 var ListRequest_GroupID_DEFAULT int64
+
 func (p *ListRequest) GetGroupID() int64 {
-  if !p.IsSetGroupID() {
-    return ListRequest_GroupID_DEFAULT
-  }
-return *p.GroupID
+	if !p.IsSetGroupID() {
+		return ListRequest_GroupID_DEFAULT
+	}
+	return *p.GroupID
 }
+
 var ListRequest_AppID_DEFAULT int32
+
 func (p *ListRequest) GetAppID() int32 {
-  if !p.IsSetAppID() {
-    return ListRequest_AppID_DEFAULT
-  }
-return *p.AppID
+	if !p.IsSetAppID() {
+		return ListRequest_AppID_DEFAULT
+	}
+	return *p.AppID
 }
+
 var ListRequest_CreatedAt_DEFAULT *TimeRange
+
 func (p *ListRequest) GetCreatedAt() *TimeRange {
-  if !p.IsSetCreatedAt() {
-    return ListRequest_CreatedAt_DEFAULT
-  }
-return p.CreatedAt
+	if !p.IsSetCreatedAt() {
+		return ListRequest_CreatedAt_DEFAULT
+	}
+	return p.CreatedAt
 }
 
 func (p *ListRequest) GetOffset() int64 {
-  return p.Offset
+	return p.Offset
 }
 
 func (p *ListRequest) GetLimit() int32 {
-  return p.Limit
+	return p.Limit
 }
+
 var ListRequest_Base_DEFAULT *base.RPCRequest
+
 func (p *ListRequest) GetBase() *base.RPCRequest {
-  if !p.IsSetBase() {
-    return ListRequest_Base_DEFAULT
-  }
-return p.Base
+	if !p.IsSetBase() {
+		return ListRequest_Base_DEFAULT
+	}
+	return p.Base
 }
 func (p *ListRequest) IsSetCommentID() bool {
-  return p.CommentID != nil
+	return p.CommentID != nil
 }
 
 func (p *ListRequest) IsSetUserID() bool {
-  return p.UserID != nil
+	return p.UserID != nil
 }
 
 func (p *ListRequest) IsSetGroupID() bool {
-  return p.GroupID != nil
+	return p.GroupID != nil
 }
 
 func (p *ListRequest) IsSetAppID() bool {
-  return p.AppID != nil
+	return p.AppID != nil
 }
 
 func (p *ListRequest) IsSetCreatedAt() bool {
-  return p.CreatedAt != nil
+	return p.CreatedAt != nil
 }
 
 func (p *ListRequest) IsSetBase() bool {
-  return p.Base != nil
+	return p.Base != nil
 }
 
 func (p *ListRequest) Read(ctx context.Context, iprot thrift.TProtocol) error {
-  if _, err := iprot.ReadStructBegin(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
-  }
+	if _, err := iprot.ReadStructBegin(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
+	}
 
-  var issetOffset bool = false;
-  var issetLimit bool = false;
+	var issetOffset bool = false
+	var issetLimit bool = false
 
-  for {
-    _, fieldTypeId, fieldId, err := iprot.ReadFieldBegin(ctx)
-    if err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
-    }
-    if fieldTypeId == thrift.STOP { break; }
-    switch fieldId {
-    case 1:
-      if fieldTypeId == thrift.I64 {
-        if err := p.ReadField1(ctx, iprot); err != nil {
-          return err
-        }
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    case 2:
-      if fieldTypeId == thrift.I64 {
-        if err := p.ReadField2(ctx, iprot); err != nil {
-          return err
-        }
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    case 3:
-      if fieldTypeId == thrift.I64 {
-        if err := p.ReadField3(ctx, iprot); err != nil {
-          return err
-        }
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    case 4:
-      if fieldTypeId == thrift.I32 {
-        if err := p.ReadField4(ctx, iprot); err != nil {
-          return err
-        }
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    case 5:
-      if fieldTypeId == thrift.STRUCT {
-        if err := p.ReadField5(ctx, iprot); err != nil {
-          return err
-        }
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    case 6:
-      if fieldTypeId == thrift.I64 {
-        if err := p.ReadField6(ctx, iprot); err != nil {
-          return err
-        }
-        issetOffset = true
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    case 7:
-      if fieldTypeId == thrift.I32 {
-        if err := p.ReadField7(ctx, iprot); err != nil {
-          return err
-        }
-        issetLimit = true
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    case 255:
-      if fieldTypeId == thrift.STRUCT {
-        if err := p.ReadField255(ctx, iprot); err != nil {
-          return err
-        }
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    default:
-      if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-        return err
-      }
-    }
-    if err := iprot.ReadFieldEnd(ctx); err != nil {
-      return err
-    }
-  }
-  if err := iprot.ReadStructEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
-  }
-  if !issetOffset{
-    return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field Offset is not set"));
-  }
-  if !issetLimit{
-    return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field Limit is not set"));
-  }
-  return nil
-}
-
-func (p *ListRequest)  ReadField1(ctx context.Context, iprot thrift.TProtocol) error {
-  if v, err := iprot.ReadI64(ctx); err != nil {
-  return thrift.PrependError("error reading field 1: ", err)
-} else {
-  p.CommentID = &v
-}
-  return nil
+	for {
+		_, fieldTypeId, fieldId, err := iprot.ReadFieldBegin(ctx)
+		if err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.I64 {
+				if err := p.ReadField1(ctx, iprot); err != nil {
+					return err
+				}
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		case 2:
+			if fieldTypeId == thrift.I64 {
+				if err := p.ReadField2(ctx, iprot); err != nil {
+					return err
+				}
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		case 3:
+			if fieldTypeId == thrift.I64 {
+				if err := p.ReadField3(ctx, iprot); err != nil {
+					return err
+				}
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		case 4:
+			if fieldTypeId == thrift.I32 {
+				if err := p.ReadField4(ctx, iprot); err != nil {
+					return err
+				}
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		case 5:
+			if fieldTypeId == thrift.STRUCT {
+				if err := p.ReadField5(ctx, iprot); err != nil {
+					return err
+				}
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		case 6:
+			if fieldTypeId == thrift.I64 {
+				if err := p.ReadField6(ctx, iprot); err != nil {
+					return err
+				}
+				issetOffset = true
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		case 7:
+			if fieldTypeId == thrift.I32 {
+				if err := p.ReadField7(ctx, iprot); err != nil {
+					return err
+				}
+				issetLimit = true
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		case 255:
+			if fieldTypeId == thrift.STRUCT {
+				if err := p.ReadField255(ctx, iprot); err != nil {
+					return err
+				}
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		default:
+			if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+				return err
+			}
+		}
+		if err := iprot.ReadFieldEnd(ctx); err != nil {
+			return err
+		}
+	}
+	if err := iprot.ReadStructEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+	}
+	if !issetOffset {
+		return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field Offset is not set"))
+	}
+	if !issetLimit {
+		return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field Limit is not set"))
+	}
+	return nil
 }
 
-func (p *ListRequest)  ReadField2(ctx context.Context, iprot thrift.TProtocol) error {
-  if v, err := iprot.ReadI64(ctx); err != nil {
-  return thrift.PrependError("error reading field 2: ", err)
-} else {
-  p.UserID = &v
-}
-  return nil
-}
-
-func (p *ListRequest)  ReadField3(ctx context.Context, iprot thrift.TProtocol) error {
-  if v, err := iprot.ReadI64(ctx); err != nil {
-  return thrift.PrependError("error reading field 3: ", err)
-} else {
-  p.GroupID = &v
-}
-  return nil
+func (p *ListRequest) ReadField1(ctx context.Context, iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(ctx); err != nil {
+		return thrift.PrependError("error reading field 1: ", err)
+	} else {
+		p.CommentID = &v
+	}
+	return nil
 }
 
-func (p *ListRequest)  ReadField4(ctx context.Context, iprot thrift.TProtocol) error {
-  if v, err := iprot.ReadI32(ctx); err != nil {
-  return thrift.PrependError("error reading field 4: ", err)
-} else {
-  p.AppID = &v
-}
-  return nil
-}
-
-func (p *ListRequest)  ReadField5(ctx context.Context, iprot thrift.TProtocol) error {
-  p.CreatedAt = &TimeRange{}
-  if err := p.CreatedAt.Read(ctx, iprot); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", p.CreatedAt), err)
-  }
-  return nil
+func (p *ListRequest) ReadField2(ctx context.Context, iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(ctx); err != nil {
+		return thrift.PrependError("error reading field 2: ", err)
+	} else {
+		p.UserID = &v
+	}
+	return nil
 }
 
-func (p *ListRequest)  ReadField6(ctx context.Context, iprot thrift.TProtocol) error {
-  if v, err := iprot.ReadI64(ctx); err != nil {
-  return thrift.PrependError("error reading field 6: ", err)
-} else {
-  p.Offset = v
-}
-  return nil
-}
-
-func (p *ListRequest)  ReadField7(ctx context.Context, iprot thrift.TProtocol) error {
-  if v, err := iprot.ReadI32(ctx); err != nil {
-  return thrift.PrependError("error reading field 7: ", err)
-} else {
-  p.Limit = v
-}
-  return nil
+func (p *ListRequest) ReadField3(ctx context.Context, iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(ctx); err != nil {
+		return thrift.PrependError("error reading field 3: ", err)
+	} else {
+		p.GroupID = &v
+	}
+	return nil
 }
 
-func (p *ListRequest)  ReadField255(ctx context.Context, iprot thrift.TProtocol) error {
-  p.Base = &base.RPCRequest{}
-  if err := p.Base.Read(ctx, iprot); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", p.Base), err)
-  }
-  return nil
+func (p *ListRequest) ReadField4(ctx context.Context, iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI32(ctx); err != nil {
+		return thrift.PrependError("error reading field 4: ", err)
+	} else {
+		p.AppID = &v
+	}
+	return nil
+}
+
+func (p *ListRequest) ReadField5(ctx context.Context, iprot thrift.TProtocol) error {
+	p.CreatedAt = &TimeRange{}
+	if err := p.CreatedAt.Read(ctx, iprot); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", p.CreatedAt), err)
+	}
+	return nil
+}
+
+func (p *ListRequest) ReadField6(ctx context.Context, iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(ctx); err != nil {
+		return thrift.PrependError("error reading field 6: ", err)
+	} else {
+		p.Offset = v
+	}
+	return nil
+}
+
+func (p *ListRequest) ReadField7(ctx context.Context, iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI32(ctx); err != nil {
+		return thrift.PrependError("error reading field 7: ", err)
+	} else {
+		p.Limit = v
+	}
+	return nil
+}
+
+func (p *ListRequest) ReadField255(ctx context.Context, iprot thrift.TProtocol) error {
+	p.Base = &base.RPCRequest{}
+	if err := p.Base.Read(ctx, iprot); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", p.Base), err)
+	}
+	return nil
 }
 
 func (p *ListRequest) Write(ctx context.Context, oprot thrift.TProtocol) error {
-  if err := oprot.WriteStructBegin(ctx, "ListRequest"); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err) }
-  if p != nil {
-    if err := p.writeField1(ctx, oprot); err != nil { return err }
-    if err := p.writeField2(ctx, oprot); err != nil { return err }
-    if err := p.writeField3(ctx, oprot); err != nil { return err }
-    if err := p.writeField4(ctx, oprot); err != nil { return err }
-    if err := p.writeField5(ctx, oprot); err != nil { return err }
-    if err := p.writeField6(ctx, oprot); err != nil { return err }
-    if err := p.writeField7(ctx, oprot); err != nil { return err }
-    if err := p.writeField255(ctx, oprot); err != nil { return err }
-  }
-  if err := oprot.WriteFieldStop(ctx); err != nil {
-    return thrift.PrependError("write field stop error: ", err) }
-  if err := oprot.WriteStructEnd(ctx); err != nil {
-    return thrift.PrependError("write struct stop error: ", err) }
-  return nil
+	if err := oprot.WriteStructBegin(ctx, "ListRequest"); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+	}
+	if p != nil {
+		if err := p.writeField1(ctx, oprot); err != nil {
+			return err
+		}
+		if err := p.writeField2(ctx, oprot); err != nil {
+			return err
+		}
+		if err := p.writeField3(ctx, oprot); err != nil {
+			return err
+		}
+		if err := p.writeField4(ctx, oprot); err != nil {
+			return err
+		}
+		if err := p.writeField5(ctx, oprot); err != nil {
+			return err
+		}
+		if err := p.writeField6(ctx, oprot); err != nil {
+			return err
+		}
+		if err := p.writeField7(ctx, oprot); err != nil {
+			return err
+		}
+		if err := p.writeField255(ctx, oprot); err != nil {
+			return err
+		}
+	}
+	if err := oprot.WriteFieldStop(ctx); err != nil {
+		return thrift.PrependError("write field stop error: ", err)
+	}
+	if err := oprot.WriteStructEnd(ctx); err != nil {
+		return thrift.PrependError("write struct stop error: ", err)
+	}
+	return nil
 }
 
 func (p *ListRequest) writeField1(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if p.IsSetCommentID() {
-    if err := oprot.WriteFieldBegin(ctx, "comment_id", thrift.I64, 1); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T write field begin error 1:comment_id: ", p), err) }
-    if err := oprot.WriteI64(ctx, int64(*p.CommentID)); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T.comment_id (1) field write error: ", p), err) }
-    if err := oprot.WriteFieldEnd(ctx); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T write field end error 1:comment_id: ", p), err) }
-  }
-  return err
+	if p.IsSetCommentID() {
+		if err := oprot.WriteFieldBegin(ctx, "comment_id", thrift.I64, 1); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field begin error 1:comment_id: ", p), err)
+		}
+		if err := oprot.WriteI64(ctx, int64(*p.CommentID)); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T.comment_id (1) field write error: ", p), err)
+		}
+		if err := oprot.WriteFieldEnd(ctx); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field end error 1:comment_id: ", p), err)
+		}
+	}
+	return err
 }
 
 func (p *ListRequest) writeField2(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if p.IsSetUserID() {
-    if err := oprot.WriteFieldBegin(ctx, "user_id", thrift.I64, 2); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T write field begin error 2:user_id: ", p), err) }
-    if err := oprot.WriteI64(ctx, int64(*p.UserID)); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T.user_id (2) field write error: ", p), err) }
-    if err := oprot.WriteFieldEnd(ctx); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T write field end error 2:user_id: ", p), err) }
-  }
-  return err
+	if p.IsSetUserID() {
+		if err := oprot.WriteFieldBegin(ctx, "user_id", thrift.I64, 2); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field begin error 2:user_id: ", p), err)
+		}
+		if err := oprot.WriteI64(ctx, int64(*p.UserID)); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T.user_id (2) field write error: ", p), err)
+		}
+		if err := oprot.WriteFieldEnd(ctx); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field end error 2:user_id: ", p), err)
+		}
+	}
+	return err
 }
 
 func (p *ListRequest) writeField3(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if p.IsSetGroupID() {
-    if err := oprot.WriteFieldBegin(ctx, "group_id", thrift.I64, 3); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T write field begin error 3:group_id: ", p), err) }
-    if err := oprot.WriteI64(ctx, int64(*p.GroupID)); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T.group_id (3) field write error: ", p), err) }
-    if err := oprot.WriteFieldEnd(ctx); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T write field end error 3:group_id: ", p), err) }
-  }
-  return err
+	if p.IsSetGroupID() {
+		if err := oprot.WriteFieldBegin(ctx, "group_id", thrift.I64, 3); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field begin error 3:group_id: ", p), err)
+		}
+		if err := oprot.WriteI64(ctx, int64(*p.GroupID)); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T.group_id (3) field write error: ", p), err)
+		}
+		if err := oprot.WriteFieldEnd(ctx); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field end error 3:group_id: ", p), err)
+		}
+	}
+	return err
 }
 
 func (p *ListRequest) writeField4(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if p.IsSetAppID() {
-    if err := oprot.WriteFieldBegin(ctx, "app_id", thrift.I32, 4); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T write field begin error 4:app_id: ", p), err) }
-    if err := oprot.WriteI32(ctx, int32(*p.AppID)); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T.app_id (4) field write error: ", p), err) }
-    if err := oprot.WriteFieldEnd(ctx); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T write field end error 4:app_id: ", p), err) }
-  }
-  return err
+	if p.IsSetAppID() {
+		if err := oprot.WriteFieldBegin(ctx, "app_id", thrift.I32, 4); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field begin error 4:app_id: ", p), err)
+		}
+		if err := oprot.WriteI32(ctx, int32(*p.AppID)); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T.app_id (4) field write error: ", p), err)
+		}
+		if err := oprot.WriteFieldEnd(ctx); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field end error 4:app_id: ", p), err)
+		}
+	}
+	return err
 }
 
 func (p *ListRequest) writeField5(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if p.IsSetCreatedAt() {
-    if err := oprot.WriteFieldBegin(ctx, "created_at", thrift.STRUCT, 5); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T write field begin error 5:created_at: ", p), err) }
-    if err := p.CreatedAt.Write(ctx, oprot); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", p.CreatedAt), err)
-    }
-    if err := oprot.WriteFieldEnd(ctx); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T write field end error 5:created_at: ", p), err) }
-  }
-  return err
+	if p.IsSetCreatedAt() {
+		if err := oprot.WriteFieldBegin(ctx, "created_at", thrift.STRUCT, 5); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field begin error 5:created_at: ", p), err)
+		}
+		if err := p.CreatedAt.Write(ctx, oprot); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", p.CreatedAt), err)
+		}
+		if err := oprot.WriteFieldEnd(ctx); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field end error 5:created_at: ", p), err)
+		}
+	}
+	return err
 }
 
 func (p *ListRequest) writeField6(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if err := oprot.WriteFieldBegin(ctx, "offset", thrift.I64, 6); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field begin error 6:offset: ", p), err) }
-  if err := oprot.WriteI64(ctx, int64(p.Offset)); err != nil {
-  return thrift.PrependError(fmt.Sprintf("%T.offset (6) field write error: ", p), err) }
-  if err := oprot.WriteFieldEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field end error 6:offset: ", p), err) }
-  return err
+	if err := oprot.WriteFieldBegin(ctx, "offset", thrift.I64, 6); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field begin error 6:offset: ", p), err)
+	}
+	if err := oprot.WriteI64(ctx, int64(p.Offset)); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T.offset (6) field write error: ", p), err)
+	}
+	if err := oprot.WriteFieldEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field end error 6:offset: ", p), err)
+	}
+	return err
 }
 
 func (p *ListRequest) writeField7(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if err := oprot.WriteFieldBegin(ctx, "limit", thrift.I32, 7); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field begin error 7:limit: ", p), err) }
-  if err := oprot.WriteI32(ctx, int32(p.Limit)); err != nil {
-  return thrift.PrependError(fmt.Sprintf("%T.limit (7) field write error: ", p), err) }
-  if err := oprot.WriteFieldEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field end error 7:limit: ", p), err) }
-  return err
+	if err := oprot.WriteFieldBegin(ctx, "limit", thrift.I32, 7); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field begin error 7:limit: ", p), err)
+	}
+	if err := oprot.WriteI32(ctx, int32(p.Limit)); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T.limit (7) field write error: ", p), err)
+	}
+	if err := oprot.WriteFieldEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field end error 7:limit: ", p), err)
+	}
+	return err
 }
 
 func (p *ListRequest) writeField255(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if p.IsSetBase() {
-    if err := oprot.WriteFieldBegin(ctx, "Base", thrift.STRUCT, 255); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T write field begin error 255:Base: ", p), err) }
-    if err := p.Base.Write(ctx, oprot); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", p.Base), err)
-    }
-    if err := oprot.WriteFieldEnd(ctx); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T write field end error 255:Base: ", p), err) }
-  }
-  return err
+	if p.IsSetBase() {
+		if err := oprot.WriteFieldBegin(ctx, "Base", thrift.STRUCT, 255); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field begin error 255:Base: ", p), err)
+		}
+		if err := p.Base.Write(ctx, oprot); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", p.Base), err)
+		}
+		if err := oprot.WriteFieldEnd(ctx); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field end error 255:Base: ", p), err)
+		}
+	}
+	return err
 }
 
 func (p *ListRequest) Equals(other *ListRequest) bool {
-  if p == other {
-    return true
-  } else if p == nil || other == nil {
-    return false
-  }
-  if p.CommentID != other.CommentID {
-    if p.CommentID == nil || other.CommentID == nil {
-      return false
-    }
-    if (*p.CommentID) != (*other.CommentID) { return false }
-  }
-  if p.UserID != other.UserID {
-    if p.UserID == nil || other.UserID == nil {
-      return false
-    }
-    if (*p.UserID) != (*other.UserID) { return false }
-  }
-  if p.GroupID != other.GroupID {
-    if p.GroupID == nil || other.GroupID == nil {
-      return false
-    }
-    if (*p.GroupID) != (*other.GroupID) { return false }
-  }
-  if p.AppID != other.AppID {
-    if p.AppID == nil || other.AppID == nil {
-      return false
-    }
-    if (*p.AppID) != (*other.AppID) { return false }
-  }
-  if !p.CreatedAt.Equals(other.CreatedAt) { return false }
-  if p.Offset != other.Offset { return false }
-  if p.Limit != other.Limit { return false }
-  if !p.Base.Equals(other.Base) { return false }
-  return true
+	if p == other {
+		return true
+	} else if p == nil || other == nil {
+		return false
+	}
+	if p.CommentID != other.CommentID {
+		if p.CommentID == nil || other.CommentID == nil {
+			return false
+		}
+		if (*p.CommentID) != (*other.CommentID) {
+			return false
+		}
+	}
+	if p.UserID != other.UserID {
+		if p.UserID == nil || other.UserID == nil {
+			return false
+		}
+		if (*p.UserID) != (*other.UserID) {
+			return false
+		}
+	}
+	if p.GroupID != other.GroupID {
+		if p.GroupID == nil || other.GroupID == nil {
+			return false
+		}
+		if (*p.GroupID) != (*other.GroupID) {
+			return false
+		}
+	}
+	if p.AppID != other.AppID {
+		if p.AppID == nil || other.AppID == nil {
+			return false
+		}
+		if (*p.AppID) != (*other.AppID) {
+			return false
+		}
+	}
+	if !p.CreatedAt.Equals(other.CreatedAt) {
+		return false
+	}
+	if p.Offset != other.Offset {
+		return false
+	}
+	if p.Limit != other.Limit {
+		return false
+	}
+	if !p.Base.Equals(other.Base) {
+		return false
+	}
+	return true
 }
 
 func (p *ListRequest) String() string {
-  if p == nil {
-    return "<nil>"
-  }
-  return fmt.Sprintf("ListRequest(%+v)", *p)
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("ListRequest(%+v)", *p)
 }
 
 // Attributes:
-//  - S
-//  - E
+//   - S
+//   - E
 type TimeRange struct {
-  S int64 `thrift:"s,1,required" db:"s" json:"s"`
-  E int64 `thrift:"e,2,required" db:"e" json:"e"`
+	S int64 `thrift:"s,1,required" db:"s" json:"s"`
+	E int64 `thrift:"e,2,required" db:"e" json:"e"`
 }
 
 func NewTimeRange() *TimeRange {
-  return &TimeRange{}
+	return &TimeRange{}
 }
 
-
 func (p *TimeRange) GetS() int64 {
-  return p.S
+	return p.S
 }
 
 func (p *TimeRange) GetE() int64 {
-  return p.E
+	return p.E
 }
 func (p *TimeRange) Read(ctx context.Context, iprot thrift.TProtocol) error {
-  if _, err := iprot.ReadStructBegin(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
-  }
+	if _, err := iprot.ReadStructBegin(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
+	}
 
-  var issetS bool = false;
-  var issetE bool = false;
+	var issetS bool = false
+	var issetE bool = false
 
-  for {
-    _, fieldTypeId, fieldId, err := iprot.ReadFieldBegin(ctx)
-    if err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
-    }
-    if fieldTypeId == thrift.STOP { break; }
-    switch fieldId {
-    case 1:
-      if fieldTypeId == thrift.I64 {
-        if err := p.ReadField1(ctx, iprot); err != nil {
-          return err
-        }
-        issetS = true
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    case 2:
-      if fieldTypeId == thrift.I64 {
-        if err := p.ReadField2(ctx, iprot); err != nil {
-          return err
-        }
-        issetE = true
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    default:
-      if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-        return err
-      }
-    }
-    if err := iprot.ReadFieldEnd(ctx); err != nil {
-      return err
-    }
-  }
-  if err := iprot.ReadStructEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
-  }
-  if !issetS{
-    return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field S is not set"));
-  }
-  if !issetE{
-    return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field E is not set"));
-  }
-  return nil
+	for {
+		_, fieldTypeId, fieldId, err := iprot.ReadFieldBegin(ctx)
+		if err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.I64 {
+				if err := p.ReadField1(ctx, iprot); err != nil {
+					return err
+				}
+				issetS = true
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		case 2:
+			if fieldTypeId == thrift.I64 {
+				if err := p.ReadField2(ctx, iprot); err != nil {
+					return err
+				}
+				issetE = true
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		default:
+			if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+				return err
+			}
+		}
+		if err := iprot.ReadFieldEnd(ctx); err != nil {
+			return err
+		}
+	}
+	if err := iprot.ReadStructEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+	}
+	if !issetS {
+		return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field S is not set"))
+	}
+	if !issetE {
+		return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field E is not set"))
+	}
+	return nil
 }
 
-func (p *TimeRange)  ReadField1(ctx context.Context, iprot thrift.TProtocol) error {
-  if v, err := iprot.ReadI64(ctx); err != nil {
-  return thrift.PrependError("error reading field 1: ", err)
-} else {
-  p.S = v
-}
-  return nil
+func (p *TimeRange) ReadField1(ctx context.Context, iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(ctx); err != nil {
+		return thrift.PrependError("error reading field 1: ", err)
+	} else {
+		p.S = v
+	}
+	return nil
 }
 
-func (p *TimeRange)  ReadField2(ctx context.Context, iprot thrift.TProtocol) error {
-  if v, err := iprot.ReadI64(ctx); err != nil {
-  return thrift.PrependError("error reading field 2: ", err)
-} else {
-  p.E = v
-}
-  return nil
+func (p *TimeRange) ReadField2(ctx context.Context, iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(ctx); err != nil {
+		return thrift.PrependError("error reading field 2: ", err)
+	} else {
+		p.E = v
+	}
+	return nil
 }
 
 func (p *TimeRange) Write(ctx context.Context, oprot thrift.TProtocol) error {
-  if err := oprot.WriteStructBegin(ctx, "TimeRange"); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err) }
-  if p != nil {
-    if err := p.writeField1(ctx, oprot); err != nil { return err }
-    if err := p.writeField2(ctx, oprot); err != nil { return err }
-  }
-  if err := oprot.WriteFieldStop(ctx); err != nil {
-    return thrift.PrependError("write field stop error: ", err) }
-  if err := oprot.WriteStructEnd(ctx); err != nil {
-    return thrift.PrependError("write struct stop error: ", err) }
-  return nil
+	if err := oprot.WriteStructBegin(ctx, "TimeRange"); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+	}
+	if p != nil {
+		if err := p.writeField1(ctx, oprot); err != nil {
+			return err
+		}
+		if err := p.writeField2(ctx, oprot); err != nil {
+			return err
+		}
+	}
+	if err := oprot.WriteFieldStop(ctx); err != nil {
+		return thrift.PrependError("write field stop error: ", err)
+	}
+	if err := oprot.WriteStructEnd(ctx); err != nil {
+		return thrift.PrependError("write struct stop error: ", err)
+	}
+	return nil
 }
 
 func (p *TimeRange) writeField1(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if err := oprot.WriteFieldBegin(ctx, "s", thrift.I64, 1); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field begin error 1:s: ", p), err) }
-  if err := oprot.WriteI64(ctx, int64(p.S)); err != nil {
-  return thrift.PrependError(fmt.Sprintf("%T.s (1) field write error: ", p), err) }
-  if err := oprot.WriteFieldEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field end error 1:s: ", p), err) }
-  return err
+	if err := oprot.WriteFieldBegin(ctx, "s", thrift.I64, 1); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field begin error 1:s: ", p), err)
+	}
+	if err := oprot.WriteI64(ctx, int64(p.S)); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T.s (1) field write error: ", p), err)
+	}
+	if err := oprot.WriteFieldEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field end error 1:s: ", p), err)
+	}
+	return err
 }
 
 func (p *TimeRange) writeField2(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if err := oprot.WriteFieldBegin(ctx, "e", thrift.I64, 2); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field begin error 2:e: ", p), err) }
-  if err := oprot.WriteI64(ctx, int64(p.E)); err != nil {
-  return thrift.PrependError(fmt.Sprintf("%T.e (2) field write error: ", p), err) }
-  if err := oprot.WriteFieldEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field end error 2:e: ", p), err) }
-  return err
+	if err := oprot.WriteFieldBegin(ctx, "e", thrift.I64, 2); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field begin error 2:e: ", p), err)
+	}
+	if err := oprot.WriteI64(ctx, int64(p.E)); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T.e (2) field write error: ", p), err)
+	}
+	if err := oprot.WriteFieldEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field end error 2:e: ", p), err)
+	}
+	return err
 }
 
 func (p *TimeRange) Equals(other *TimeRange) bool {
-  if p == other {
-    return true
-  } else if p == nil || other == nil {
-    return false
-  }
-  if p.S != other.S { return false }
-  if p.E != other.E { return false }
-  return true
+	if p == other {
+		return true
+	} else if p == nil || other == nil {
+		return false
+	}
+	if p.S != other.S {
+		return false
+	}
+	if p.E != other.E {
+		return false
+	}
+	return true
 }
 
 func (p *TimeRange) String() string {
-  if p == nil {
-    return "<nil>"
-  }
-  return fmt.Sprintf("TimeRange(%+v)", *p)
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("TimeRange(%+v)", *p)
 }
 
 // Attributes:
-//  - Offset
-//  - Total
-//  - CommentsData
-//  - Base
+//   - Offset
+//   - Total
+//   - CommentsData
+//   - Base
 type ListResponse struct {
-  Offset int64 `thrift:"offset,1,required" db:"offset" json:"offset"`
-  Total int32 `thrift:"total,2,required" db:"total" json:"total"`
-  CommentsData []*CommentData `thrift:"comments_data,3" db:"comments_data" json:"comments_data,omitempty"`
-  // unused fields # 4 to 254
-  Base *base.RPCResponse `thrift:"Base,255,required" db:"Base" json:"Base"`
+	Offset       int64          `thrift:"offset,1,required" db:"offset" json:"offset"`
+	Total        int32          `thrift:"total,2,required" db:"total" json:"total"`
+	CommentsData []*CommentData `thrift:"comments_data,3" db:"comments_data" json:"comments_data,omitempty"`
+	// unused fields # 4 to 254
+	Base *base.RPCResponse `thrift:"Base,255,required" db:"Base" json:"Base"`
 }
 
 func NewListResponse() *ListResponse {
-  return &ListResponse{}
+	return &ListResponse{}
 }
 
-
 func (p *ListResponse) GetOffset() int64 {
-  return p.Offset
+	return p.Offset
 }
 
 func (p *ListResponse) GetTotal() int32 {
-  return p.Total
+	return p.Total
 }
+
 var ListResponse_CommentsData_DEFAULT []*CommentData
 
 func (p *ListResponse) GetCommentsData() []*CommentData {
-  return p.CommentsData
+	return p.CommentsData
 }
+
 var ListResponse_Base_DEFAULT *base.RPCResponse
+
 func (p *ListResponse) GetBase() *base.RPCResponse {
-  if !p.IsSetBase() {
-    return ListResponse_Base_DEFAULT
-  }
-return p.Base
+	if !p.IsSetBase() {
+		return ListResponse_Base_DEFAULT
+	}
+	return p.Base
 }
 func (p *ListResponse) IsSetCommentsData() bool {
-  return p.CommentsData != nil
+	return p.CommentsData != nil
 }
 
 func (p *ListResponse) IsSetBase() bool {
-  return p.Base != nil
+	return p.Base != nil
 }
 
 func (p *ListResponse) Read(ctx context.Context, iprot thrift.TProtocol) error {
-  if _, err := iprot.ReadStructBegin(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
-  }
+	if _, err := iprot.ReadStructBegin(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
+	}
 
-  var issetOffset bool = false;
-  var issetTotal bool = false;
-  var issetBase bool = false;
+	var issetOffset bool = false
+	var issetTotal bool = false
+	var issetBase bool = false
 
-  for {
-    _, fieldTypeId, fieldId, err := iprot.ReadFieldBegin(ctx)
-    if err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
-    }
-    if fieldTypeId == thrift.STOP { break; }
-    switch fieldId {
-    case 1:
-      if fieldTypeId == thrift.I64 {
-        if err := p.ReadField1(ctx, iprot); err != nil {
-          return err
-        }
-        issetOffset = true
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    case 2:
-      if fieldTypeId == thrift.I32 {
-        if err := p.ReadField2(ctx, iprot); err != nil {
-          return err
-        }
-        issetTotal = true
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    case 3:
-      if fieldTypeId == thrift.LIST {
-        if err := p.ReadField3(ctx, iprot); err != nil {
-          return err
-        }
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    case 255:
-      if fieldTypeId == thrift.STRUCT {
-        if err := p.ReadField255(ctx, iprot); err != nil {
-          return err
-        }
-        issetBase = true
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    default:
-      if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-        return err
-      }
-    }
-    if err := iprot.ReadFieldEnd(ctx); err != nil {
-      return err
-    }
-  }
-  if err := iprot.ReadStructEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
-  }
-  if !issetOffset{
-    return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field Offset is not set"));
-  }
-  if !issetTotal{
-    return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field Total is not set"));
-  }
-  if !issetBase{
-    return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field Base is not set"));
-  }
-  return nil
+	for {
+		_, fieldTypeId, fieldId, err := iprot.ReadFieldBegin(ctx)
+		if err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.I64 {
+				if err := p.ReadField1(ctx, iprot); err != nil {
+					return err
+				}
+				issetOffset = true
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		case 2:
+			if fieldTypeId == thrift.I32 {
+				if err := p.ReadField2(ctx, iprot); err != nil {
+					return err
+				}
+				issetTotal = true
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		case 3:
+			if fieldTypeId == thrift.LIST {
+				if err := p.ReadField3(ctx, iprot); err != nil {
+					return err
+				}
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		case 255:
+			if fieldTypeId == thrift.STRUCT {
+				if err := p.ReadField255(ctx, iprot); err != nil {
+					return err
+				}
+				issetBase = true
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		default:
+			if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+				return err
+			}
+		}
+		if err := iprot.ReadFieldEnd(ctx); err != nil {
+			return err
+		}
+	}
+	if err := iprot.ReadStructEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+	}
+	if !issetOffset {
+		return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field Offset is not set"))
+	}
+	if !issetTotal {
+		return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field Total is not set"))
+	}
+	if !issetBase {
+		return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field Base is not set"))
+	}
+	return nil
 }
 
-func (p *ListResponse)  ReadField1(ctx context.Context, iprot thrift.TProtocol) error {
-  if v, err := iprot.ReadI64(ctx); err != nil {
-  return thrift.PrependError("error reading field 1: ", err)
-} else {
-  p.Offset = v
-}
-  return nil
-}
-
-func (p *ListResponse)  ReadField2(ctx context.Context, iprot thrift.TProtocol) error {
-  if v, err := iprot.ReadI32(ctx); err != nil {
-  return thrift.PrependError("error reading field 2: ", err)
-} else {
-  p.Total = v
-}
-  return nil
+func (p *ListResponse) ReadField1(ctx context.Context, iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(ctx); err != nil {
+		return thrift.PrependError("error reading field 1: ", err)
+	} else {
+		p.Offset = v
+	}
+	return nil
 }
 
-func (p *ListResponse)  ReadField3(ctx context.Context, iprot thrift.TProtocol) error {
-  _, size, err := iprot.ReadListBegin(ctx)
-  if err != nil {
-    return thrift.PrependError("error reading list begin: ", err)
-  }
-  tSlice := make([]*CommentData, 0, size)
-  p.CommentsData =  tSlice
-  for i := 0; i < size; i ++ {
-    _elem4 := &CommentData{}
-    if err := _elem4.Read(ctx, iprot); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", _elem4), err)
-    }
-    p.CommentsData = append(p.CommentsData, _elem4)
-  }
-  if err := iprot.ReadListEnd(ctx); err != nil {
-    return thrift.PrependError("error reading list end: ", err)
-  }
-  return nil
+func (p *ListResponse) ReadField2(ctx context.Context, iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI32(ctx); err != nil {
+		return thrift.PrependError("error reading field 2: ", err)
+	} else {
+		p.Total = v
+	}
+	return nil
 }
 
-func (p *ListResponse)  ReadField255(ctx context.Context, iprot thrift.TProtocol) error {
-  p.Base = &base.RPCResponse{}
-  if err := p.Base.Read(ctx, iprot); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", p.Base), err)
-  }
-  return nil
+func (p *ListResponse) ReadField3(ctx context.Context, iprot thrift.TProtocol) error {
+	_, size, err := iprot.ReadListBegin(ctx)
+	if err != nil {
+		return thrift.PrependError("error reading list begin: ", err)
+	}
+	tSlice := make([]*CommentData, 0, size)
+	p.CommentsData = tSlice
+	for i := 0; i < size; i++ {
+		_elem4 := &CommentData{}
+		if err := _elem4.Read(ctx, iprot); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", _elem4), err)
+		}
+		p.CommentsData = append(p.CommentsData, _elem4)
+	}
+	if err := iprot.ReadListEnd(ctx); err != nil {
+		return thrift.PrependError("error reading list end: ", err)
+	}
+	return nil
+}
+
+func (p *ListResponse) ReadField255(ctx context.Context, iprot thrift.TProtocol) error {
+	p.Base = &base.RPCResponse{}
+	if err := p.Base.Read(ctx, iprot); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", p.Base), err)
+	}
+	return nil
 }
 
 func (p *ListResponse) Write(ctx context.Context, oprot thrift.TProtocol) error {
-  if err := oprot.WriteStructBegin(ctx, "ListResponse"); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err) }
-  if p != nil {
-    if err := p.writeField1(ctx, oprot); err != nil { return err }
-    if err := p.writeField2(ctx, oprot); err != nil { return err }
-    if err := p.writeField3(ctx, oprot); err != nil { return err }
-    if err := p.writeField255(ctx, oprot); err != nil { return err }
-  }
-  if err := oprot.WriteFieldStop(ctx); err != nil {
-    return thrift.PrependError("write field stop error: ", err) }
-  if err := oprot.WriteStructEnd(ctx); err != nil {
-    return thrift.PrependError("write struct stop error: ", err) }
-  return nil
+	if err := oprot.WriteStructBegin(ctx, "ListResponse"); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+	}
+	if p != nil {
+		if err := p.writeField1(ctx, oprot); err != nil {
+			return err
+		}
+		if err := p.writeField2(ctx, oprot); err != nil {
+			return err
+		}
+		if err := p.writeField3(ctx, oprot); err != nil {
+			return err
+		}
+		if err := p.writeField255(ctx, oprot); err != nil {
+			return err
+		}
+	}
+	if err := oprot.WriteFieldStop(ctx); err != nil {
+		return thrift.PrependError("write field stop error: ", err)
+	}
+	if err := oprot.WriteStructEnd(ctx); err != nil {
+		return thrift.PrependError("write struct stop error: ", err)
+	}
+	return nil
 }
 
 func (p *ListResponse) writeField1(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if err := oprot.WriteFieldBegin(ctx, "offset", thrift.I64, 1); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field begin error 1:offset: ", p), err) }
-  if err := oprot.WriteI64(ctx, int64(p.Offset)); err != nil {
-  return thrift.PrependError(fmt.Sprintf("%T.offset (1) field write error: ", p), err) }
-  if err := oprot.WriteFieldEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field end error 1:offset: ", p), err) }
-  return err
+	if err := oprot.WriteFieldBegin(ctx, "offset", thrift.I64, 1); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field begin error 1:offset: ", p), err)
+	}
+	if err := oprot.WriteI64(ctx, int64(p.Offset)); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T.offset (1) field write error: ", p), err)
+	}
+	if err := oprot.WriteFieldEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field end error 1:offset: ", p), err)
+	}
+	return err
 }
 
 func (p *ListResponse) writeField2(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if err := oprot.WriteFieldBegin(ctx, "total", thrift.I32, 2); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field begin error 2:total: ", p), err) }
-  if err := oprot.WriteI32(ctx, int32(p.Total)); err != nil {
-  return thrift.PrependError(fmt.Sprintf("%T.total (2) field write error: ", p), err) }
-  if err := oprot.WriteFieldEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field end error 2:total: ", p), err) }
-  return err
+	if err := oprot.WriteFieldBegin(ctx, "total", thrift.I32, 2); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field begin error 2:total: ", p), err)
+	}
+	if err := oprot.WriteI32(ctx, int32(p.Total)); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T.total (2) field write error: ", p), err)
+	}
+	if err := oprot.WriteFieldEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field end error 2:total: ", p), err)
+	}
+	return err
 }
 
 func (p *ListResponse) writeField3(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if p.IsSetCommentsData() {
-    if err := oprot.WriteFieldBegin(ctx, "comments_data", thrift.LIST, 3); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T write field begin error 3:comments_data: ", p), err) }
-    if err := oprot.WriteListBegin(ctx, thrift.STRUCT, len(p.CommentsData)); err != nil {
-      return thrift.PrependError("error writing list begin: ", err)
-    }
-    for _, v := range p.CommentsData {
-      if err := v.Write(ctx, oprot); err != nil {
-        return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", v), err)
-      }
-    }
-    if err := oprot.WriteListEnd(ctx); err != nil {
-      return thrift.PrependError("error writing list end: ", err)
-    }
-    if err := oprot.WriteFieldEnd(ctx); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T write field end error 3:comments_data: ", p), err) }
-  }
-  return err
+	if p.IsSetCommentsData() {
+		if err := oprot.WriteFieldBegin(ctx, "comments_data", thrift.LIST, 3); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field begin error 3:comments_data: ", p), err)
+		}
+		if err := oprot.WriteListBegin(ctx, thrift.STRUCT, len(p.CommentsData)); err != nil {
+			return thrift.PrependError("error writing list begin: ", err)
+		}
+		for _, v := range p.CommentsData {
+			if err := v.Write(ctx, oprot); err != nil {
+				return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", v), err)
+			}
+		}
+		if err := oprot.WriteListEnd(ctx); err != nil {
+			return thrift.PrependError("error writing list end: ", err)
+		}
+		if err := oprot.WriteFieldEnd(ctx); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field end error 3:comments_data: ", p), err)
+		}
+	}
+	return err
 }
 
 func (p *ListResponse) writeField255(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if err := oprot.WriteFieldBegin(ctx, "Base", thrift.STRUCT, 255); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field begin error 255:Base: ", p), err) }
-  if err := p.Base.Write(ctx, oprot); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", p.Base), err)
-  }
-  if err := oprot.WriteFieldEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field end error 255:Base: ", p), err) }
-  return err
+	if err := oprot.WriteFieldBegin(ctx, "Base", thrift.STRUCT, 255); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field begin error 255:Base: ", p), err)
+	}
+	if err := p.Base.Write(ctx, oprot); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", p.Base), err)
+	}
+	if err := oprot.WriteFieldEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field end error 255:Base: ", p), err)
+	}
+	return err
 }
 
 func (p *ListResponse) Equals(other *ListResponse) bool {
-  if p == other {
-    return true
-  } else if p == nil || other == nil {
-    return false
-  }
-  if p.Offset != other.Offset { return false }
-  if p.Total != other.Total { return false }
-  if len(p.CommentsData) != len(other.CommentsData) { return false }
-  for i, _tgt := range p.CommentsData {
-    _src5 := other.CommentsData[i]
-    if !_tgt.Equals(_src5) { return false }
-  }
-  if !p.Base.Equals(other.Base) { return false }
-  return true
+	if p == other {
+		return true
+	} else if p == nil || other == nil {
+		return false
+	}
+	if p.Offset != other.Offset {
+		return false
+	}
+	if p.Total != other.Total {
+		return false
+	}
+	if len(p.CommentsData) != len(other.CommentsData) {
+		return false
+	}
+	for i, _tgt := range p.CommentsData {
+		_src5 := other.CommentsData[i]
+		if !_tgt.Equals(_src5) {
+			return false
+		}
+	}
+	if !p.Base.Equals(other.Base) {
+		return false
+	}
+	return true
 }
 
 func (p *ListResponse) String() string {
-  if p == nil {
-    return "<nil>"
-  }
-  return fmt.Sprintf("ListResponse(%+v)", *p)
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("ListResponse(%+v)", *p)
 }
 
 // Attributes:
-//  - ID
-//  - CommentID
-//  - UserID
-//  - GroupID
-//  - AppID
-//  - Text
-//  - Images
-//  - CreatedAt
-//  - UpdatedAt
-//  - Extra
+//   - ID
+//   - CommentID
+//   - UserID
+//   - GroupID
+//   - AppID
+//   - Text
+//   - Images
+//   - ReplyCommentID
+//   - CreatedAt
+//   - UpdatedAt
+//   - Extra
 type CommentData struct {
-  ID int64 `thrift:"id,1,required" db:"id" json:"id"`
-  CommentID int64 `thrift:"comment_id,2,required" db:"comment_id" json:"comment_id"`
-  UserID int64 `thrift:"user_id,3,required" db:"user_id" json:"user_id"`
-  GroupID int64 `thrift:"group_id,4,required" db:"group_id" json:"group_id"`
-  AppID int32 `thrift:"app_id,5,required" db:"app_id" json:"app_id"`
-  Text string `thrift:"text,6,required" db:"text" json:"text"`
-  Images []string `thrift:"images,7" db:"images" json:"images,omitempty"`
-  CreatedAt int64 `thrift:"created_at,8,required" db:"created_at" json:"created_at"`
-  UpdatedAt int64 `thrift:"updated_at,9,required" db:"updated_at" json:"updated_at"`
-  Extra *string `thrift:"extra,10" db:"extra" json:"extra,omitempty"`
+	ID             int64    `thrift:"id,1,required" db:"id" json:"id"`
+	CommentID      int64    `thrift:"comment_id,2,required" db:"comment_id" json:"comment_id"`
+	UserID         int64    `thrift:"user_id,3,required" db:"user_id" json:"user_id"`
+	GroupID        int64    `thrift:"group_id,4,required" db:"group_id" json:"group_id"`
+	AppID          int32    `thrift:"app_id,5,required" db:"app_id" json:"app_id"`
+	Text           string   `thrift:"text,6,required" db:"text" json:"text"`
+	Images         []string `thrift:"images,7" db:"images" json:"images,omitempty"`
+	ReplyCommentID *int64   `thrift:"reply_comment_id,8" db:"reply_comment_id" json:"reply_comment_id,omitempty"`
+	CreatedAt      int64    `thrift:"created_at,9,required" db:"created_at" json:"created_at"`
+	UpdatedAt      int64    `thrift:"updated_at,10,required" db:"updated_at" json:"updated_at"`
+	Extra          *string  `thrift:"extra,11" db:"extra" json:"extra,omitempty"`
 }
 
 func NewCommentData() *CommentData {
-  return &CommentData{}
+	return &CommentData{}
 }
 
-
 func (p *CommentData) GetID() int64 {
-  return p.ID
+	return p.ID
 }
 
 func (p *CommentData) GetCommentID() int64 {
-  return p.CommentID
+	return p.CommentID
 }
 
 func (p *CommentData) GetUserID() int64 {
-  return p.UserID
+	return p.UserID
 }
 
 func (p *CommentData) GetGroupID() int64 {
-  return p.GroupID
+	return p.GroupID
 }
 
 func (p *CommentData) GetAppID() int32 {
-  return p.AppID
+	return p.AppID
 }
 
 func (p *CommentData) GetText() string {
-  return p.Text
+	return p.Text
 }
+
 var CommentData_Images_DEFAULT []string
 
 func (p *CommentData) GetImages() []string {
-  return p.Images
+	return p.Images
+}
+
+var CommentData_ReplyCommentID_DEFAULT int64
+
+func (p *CommentData) GetReplyCommentID() int64 {
+	if !p.IsSetReplyCommentID() {
+		return CommentData_ReplyCommentID_DEFAULT
+	}
+	return *p.ReplyCommentID
 }
 
 func (p *CommentData) GetCreatedAt() int64 {
-  return p.CreatedAt
+	return p.CreatedAt
 }
 
 func (p *CommentData) GetUpdatedAt() int64 {
-  return p.UpdatedAt
+	return p.UpdatedAt
 }
+
 var CommentData_Extra_DEFAULT string
+
 func (p *CommentData) GetExtra() string {
-  if !p.IsSetExtra() {
-    return CommentData_Extra_DEFAULT
-  }
-return *p.Extra
+	if !p.IsSetExtra() {
+		return CommentData_Extra_DEFAULT
+	}
+	return *p.Extra
 }
 func (p *CommentData) IsSetImages() bool {
-  return p.Images != nil
+	return p.Images != nil
+}
+
+func (p *CommentData) IsSetReplyCommentID() bool {
+	return p.ReplyCommentID != nil
 }
 
 func (p *CommentData) IsSetExtra() bool {
-  return p.Extra != nil
+	return p.Extra != nil
 }
 
 func (p *CommentData) Read(ctx context.Context, iprot thrift.TProtocol) error {
-  if _, err := iprot.ReadStructBegin(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
-  }
+	if _, err := iprot.ReadStructBegin(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
+	}
 
-  var issetID bool = false;
-  var issetCommentID bool = false;
-  var issetUserID bool = false;
-  var issetGroupID bool = false;
-  var issetAppID bool = false;
-  var issetText bool = false;
-  var issetCreatedAt bool = false;
-  var issetUpdatedAt bool = false;
+	var issetID bool = false
+	var issetCommentID bool = false
+	var issetUserID bool = false
+	var issetGroupID bool = false
+	var issetAppID bool = false
+	var issetText bool = false
+	var issetCreatedAt bool = false
+	var issetUpdatedAt bool = false
 
-  for {
-    _, fieldTypeId, fieldId, err := iprot.ReadFieldBegin(ctx)
-    if err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
-    }
-    if fieldTypeId == thrift.STOP { break; }
-    switch fieldId {
-    case 1:
-      if fieldTypeId == thrift.I64 {
-        if err := p.ReadField1(ctx, iprot); err != nil {
-          return err
-        }
-        issetID = true
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    case 2:
-      if fieldTypeId == thrift.I64 {
-        if err := p.ReadField2(ctx, iprot); err != nil {
-          return err
-        }
-        issetCommentID = true
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    case 3:
-      if fieldTypeId == thrift.I64 {
-        if err := p.ReadField3(ctx, iprot); err != nil {
-          return err
-        }
-        issetUserID = true
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    case 4:
-      if fieldTypeId == thrift.I64 {
-        if err := p.ReadField4(ctx, iprot); err != nil {
-          return err
-        }
-        issetGroupID = true
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    case 5:
-      if fieldTypeId == thrift.I32 {
-        if err := p.ReadField5(ctx, iprot); err != nil {
-          return err
-        }
-        issetAppID = true
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    case 6:
-      if fieldTypeId == thrift.STRING {
-        if err := p.ReadField6(ctx, iprot); err != nil {
-          return err
-        }
-        issetText = true
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    case 7:
-      if fieldTypeId == thrift.LIST {
-        if err := p.ReadField7(ctx, iprot); err != nil {
-          return err
-        }
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    case 8:
-      if fieldTypeId == thrift.I64 {
-        if err := p.ReadField8(ctx, iprot); err != nil {
-          return err
-        }
-        issetCreatedAt = true
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    case 9:
-      if fieldTypeId == thrift.I64 {
-        if err := p.ReadField9(ctx, iprot); err != nil {
-          return err
-        }
-        issetUpdatedAt = true
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    case 10:
-      if fieldTypeId == thrift.STRING {
-        if err := p.ReadField10(ctx, iprot); err != nil {
-          return err
-        }
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    default:
-      if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-        return err
-      }
-    }
-    if err := iprot.ReadFieldEnd(ctx); err != nil {
-      return err
-    }
-  }
-  if err := iprot.ReadStructEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
-  }
-  if !issetID{
-    return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field ID is not set"));
-  }
-  if !issetCommentID{
-    return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field CommentID is not set"));
-  }
-  if !issetUserID{
-    return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field UserID is not set"));
-  }
-  if !issetGroupID{
-    return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field GroupID is not set"));
-  }
-  if !issetAppID{
-    return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field AppID is not set"));
-  }
-  if !issetText{
-    return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field Text is not set"));
-  }
-  if !issetCreatedAt{
-    return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field CreatedAt is not set"));
-  }
-  if !issetUpdatedAt{
-    return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field UpdatedAt is not set"));
-  }
-  return nil
-}
-
-func (p *CommentData)  ReadField1(ctx context.Context, iprot thrift.TProtocol) error {
-  if v, err := iprot.ReadI64(ctx); err != nil {
-  return thrift.PrependError("error reading field 1: ", err)
-} else {
-  p.ID = v
-}
-  return nil
-}
-
-func (p *CommentData)  ReadField2(ctx context.Context, iprot thrift.TProtocol) error {
-  if v, err := iprot.ReadI64(ctx); err != nil {
-  return thrift.PrependError("error reading field 2: ", err)
-} else {
-  p.CommentID = v
-}
-  return nil
+	for {
+		_, fieldTypeId, fieldId, err := iprot.ReadFieldBegin(ctx)
+		if err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.I64 {
+				if err := p.ReadField1(ctx, iprot); err != nil {
+					return err
+				}
+				issetID = true
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		case 2:
+			if fieldTypeId == thrift.I64 {
+				if err := p.ReadField2(ctx, iprot); err != nil {
+					return err
+				}
+				issetCommentID = true
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		case 3:
+			if fieldTypeId == thrift.I64 {
+				if err := p.ReadField3(ctx, iprot); err != nil {
+					return err
+				}
+				issetUserID = true
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		case 4:
+			if fieldTypeId == thrift.I64 {
+				if err := p.ReadField4(ctx, iprot); err != nil {
+					return err
+				}
+				issetGroupID = true
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		case 5:
+			if fieldTypeId == thrift.I32 {
+				if err := p.ReadField5(ctx, iprot); err != nil {
+					return err
+				}
+				issetAppID = true
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		case 6:
+			if fieldTypeId == thrift.STRING {
+				if err := p.ReadField6(ctx, iprot); err != nil {
+					return err
+				}
+				issetText = true
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		case 7:
+			if fieldTypeId == thrift.LIST {
+				if err := p.ReadField7(ctx, iprot); err != nil {
+					return err
+				}
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		case 8:
+			if fieldTypeId == thrift.I64 {
+				if err := p.ReadField8(ctx, iprot); err != nil {
+					return err
+				}
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		case 9:
+			if fieldTypeId == thrift.I64 {
+				if err := p.ReadField9(ctx, iprot); err != nil {
+					return err
+				}
+				issetCreatedAt = true
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		case 10:
+			if fieldTypeId == thrift.I64 {
+				if err := p.ReadField10(ctx, iprot); err != nil {
+					return err
+				}
+				issetUpdatedAt = true
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		case 11:
+			if fieldTypeId == thrift.STRING {
+				if err := p.ReadField11(ctx, iprot); err != nil {
+					return err
+				}
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		default:
+			if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+				return err
+			}
+		}
+		if err := iprot.ReadFieldEnd(ctx); err != nil {
+			return err
+		}
+	}
+	if err := iprot.ReadStructEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+	}
+	if !issetID {
+		return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field ID is not set"))
+	}
+	if !issetCommentID {
+		return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field CommentID is not set"))
+	}
+	if !issetUserID {
+		return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field UserID is not set"))
+	}
+	if !issetGroupID {
+		return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field GroupID is not set"))
+	}
+	if !issetAppID {
+		return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field AppID is not set"))
+	}
+	if !issetText {
+		return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field Text is not set"))
+	}
+	if !issetCreatedAt {
+		return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field CreatedAt is not set"))
+	}
+	if !issetUpdatedAt {
+		return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field UpdatedAt is not set"))
+	}
+	return nil
 }
 
-func (p *CommentData)  ReadField3(ctx context.Context, iprot thrift.TProtocol) error {
-  if v, err := iprot.ReadI64(ctx); err != nil {
-  return thrift.PrependError("error reading field 3: ", err)
-} else {
-  p.UserID = v
-}
-  return nil
-}
-
-func (p *CommentData)  ReadField4(ctx context.Context, iprot thrift.TProtocol) error {
-  if v, err := iprot.ReadI64(ctx); err != nil {
-  return thrift.PrependError("error reading field 4: ", err)
-} else {
-  p.GroupID = v
-}
-  return nil
+func (p *CommentData) ReadField1(ctx context.Context, iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(ctx); err != nil {
+		return thrift.PrependError("error reading field 1: ", err)
+	} else {
+		p.ID = v
+	}
+	return nil
 }
 
-func (p *CommentData)  ReadField5(ctx context.Context, iprot thrift.TProtocol) error {
-  if v, err := iprot.ReadI32(ctx); err != nil {
-  return thrift.PrependError("error reading field 5: ", err)
-} else {
-  p.AppID = v
-}
-  return nil
-}
-
-func (p *CommentData)  ReadField6(ctx context.Context, iprot thrift.TProtocol) error {
-  if v, err := iprot.ReadString(ctx); err != nil {
-  return thrift.PrependError("error reading field 6: ", err)
-} else {
-  p.Text = v
-}
-  return nil
+func (p *CommentData) ReadField2(ctx context.Context, iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(ctx); err != nil {
+		return thrift.PrependError("error reading field 2: ", err)
+	} else {
+		p.CommentID = v
+	}
+	return nil
 }
 
-func (p *CommentData)  ReadField7(ctx context.Context, iprot thrift.TProtocol) error {
-  _, size, err := iprot.ReadListBegin(ctx)
-  if err != nil {
-    return thrift.PrependError("error reading list begin: ", err)
-  }
-  tSlice := make([]string, 0, size)
-  p.Images =  tSlice
-  for i := 0; i < size; i ++ {
-var _elem6 string
-    if v, err := iprot.ReadString(ctx); err != nil {
-    return thrift.PrependError("error reading field 0: ", err)
-} else {
-    _elem6 = v
-}
-    p.Images = append(p.Images, _elem6)
-  }
-  if err := iprot.ReadListEnd(ctx); err != nil {
-    return thrift.PrependError("error reading list end: ", err)
-  }
-  return nil
+func (p *CommentData) ReadField3(ctx context.Context, iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(ctx); err != nil {
+		return thrift.PrependError("error reading field 3: ", err)
+	} else {
+		p.UserID = v
+	}
+	return nil
 }
 
-func (p *CommentData)  ReadField8(ctx context.Context, iprot thrift.TProtocol) error {
-  if v, err := iprot.ReadI64(ctx); err != nil {
-  return thrift.PrependError("error reading field 8: ", err)
-} else {
-  p.CreatedAt = v
-}
-  return nil
-}
-
-func (p *CommentData)  ReadField9(ctx context.Context, iprot thrift.TProtocol) error {
-  if v, err := iprot.ReadI64(ctx); err != nil {
-  return thrift.PrependError("error reading field 9: ", err)
-} else {
-  p.UpdatedAt = v
-}
-  return nil
+func (p *CommentData) ReadField4(ctx context.Context, iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(ctx); err != nil {
+		return thrift.PrependError("error reading field 4: ", err)
+	} else {
+		p.GroupID = v
+	}
+	return nil
 }
 
-func (p *CommentData)  ReadField10(ctx context.Context, iprot thrift.TProtocol) error {
-  if v, err := iprot.ReadString(ctx); err != nil {
-  return thrift.PrependError("error reading field 10: ", err)
-} else {
-  p.Extra = &v
+func (p *CommentData) ReadField5(ctx context.Context, iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI32(ctx); err != nil {
+		return thrift.PrependError("error reading field 5: ", err)
+	} else {
+		p.AppID = v
+	}
+	return nil
 }
-  return nil
+
+func (p *CommentData) ReadField6(ctx context.Context, iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadString(ctx); err != nil {
+		return thrift.PrependError("error reading field 6: ", err)
+	} else {
+		p.Text = v
+	}
+	return nil
+}
+
+func (p *CommentData) ReadField7(ctx context.Context, iprot thrift.TProtocol) error {
+	_, size, err := iprot.ReadListBegin(ctx)
+	if err != nil {
+		return thrift.PrependError("error reading list begin: ", err)
+	}
+	tSlice := make([]string, 0, size)
+	p.Images = tSlice
+	for i := 0; i < size; i++ {
+		var _elem6 string
+		if v, err := iprot.ReadString(ctx); err != nil {
+			return thrift.PrependError("error reading field 0: ", err)
+		} else {
+			_elem6 = v
+		}
+		p.Images = append(p.Images, _elem6)
+	}
+	if err := iprot.ReadListEnd(ctx); err != nil {
+		return thrift.PrependError("error reading list end: ", err)
+	}
+	return nil
+}
+
+func (p *CommentData) ReadField8(ctx context.Context, iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(ctx); err != nil {
+		return thrift.PrependError("error reading field 8: ", err)
+	} else {
+		p.ReplyCommentID = &v
+	}
+	return nil
+}
+
+func (p *CommentData) ReadField9(ctx context.Context, iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(ctx); err != nil {
+		return thrift.PrependError("error reading field 9: ", err)
+	} else {
+		p.CreatedAt = v
+	}
+	return nil
+}
+
+func (p *CommentData) ReadField10(ctx context.Context, iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(ctx); err != nil {
+		return thrift.PrependError("error reading field 10: ", err)
+	} else {
+		p.UpdatedAt = v
+	}
+	return nil
+}
+
+func (p *CommentData) ReadField11(ctx context.Context, iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadString(ctx); err != nil {
+		return thrift.PrependError("error reading field 11: ", err)
+	} else {
+		p.Extra = &v
+	}
+	return nil
 }
 
 func (p *CommentData) Write(ctx context.Context, oprot thrift.TProtocol) error {
-  if err := oprot.WriteStructBegin(ctx, "CommentData"); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err) }
-  if p != nil {
-    if err := p.writeField1(ctx, oprot); err != nil { return err }
-    if err := p.writeField2(ctx, oprot); err != nil { return err }
-    if err := p.writeField3(ctx, oprot); err != nil { return err }
-    if err := p.writeField4(ctx, oprot); err != nil { return err }
-    if err := p.writeField5(ctx, oprot); err != nil { return err }
-    if err := p.writeField6(ctx, oprot); err != nil { return err }
-    if err := p.writeField7(ctx, oprot); err != nil { return err }
-    if err := p.writeField8(ctx, oprot); err != nil { return err }
-    if err := p.writeField9(ctx, oprot); err != nil { return err }
-    if err := p.writeField10(ctx, oprot); err != nil { return err }
-  }
-  if err := oprot.WriteFieldStop(ctx); err != nil {
-    return thrift.PrependError("write field stop error: ", err) }
-  if err := oprot.WriteStructEnd(ctx); err != nil {
-    return thrift.PrependError("write struct stop error: ", err) }
-  return nil
+	if err := oprot.WriteStructBegin(ctx, "CommentData"); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+	}
+	if p != nil {
+		if err := p.writeField1(ctx, oprot); err != nil {
+			return err
+		}
+		if err := p.writeField2(ctx, oprot); err != nil {
+			return err
+		}
+		if err := p.writeField3(ctx, oprot); err != nil {
+			return err
+		}
+		if err := p.writeField4(ctx, oprot); err != nil {
+			return err
+		}
+		if err := p.writeField5(ctx, oprot); err != nil {
+			return err
+		}
+		if err := p.writeField6(ctx, oprot); err != nil {
+			return err
+		}
+		if err := p.writeField7(ctx, oprot); err != nil {
+			return err
+		}
+		if err := p.writeField8(ctx, oprot); err != nil {
+			return err
+		}
+		if err := p.writeField9(ctx, oprot); err != nil {
+			return err
+		}
+		if err := p.writeField10(ctx, oprot); err != nil {
+			return err
+		}
+		if err := p.writeField11(ctx, oprot); err != nil {
+			return err
+		}
+	}
+	if err := oprot.WriteFieldStop(ctx); err != nil {
+		return thrift.PrependError("write field stop error: ", err)
+	}
+	if err := oprot.WriteStructEnd(ctx); err != nil {
+		return thrift.PrependError("write struct stop error: ", err)
+	}
+	return nil
 }
 
 func (p *CommentData) writeField1(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if err := oprot.WriteFieldBegin(ctx, "id", thrift.I64, 1); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field begin error 1:id: ", p), err) }
-  if err := oprot.WriteI64(ctx, int64(p.ID)); err != nil {
-  return thrift.PrependError(fmt.Sprintf("%T.id (1) field write error: ", p), err) }
-  if err := oprot.WriteFieldEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field end error 1:id: ", p), err) }
-  return err
+	if err := oprot.WriteFieldBegin(ctx, "id", thrift.I64, 1); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field begin error 1:id: ", p), err)
+	}
+	if err := oprot.WriteI64(ctx, int64(p.ID)); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T.id (1) field write error: ", p), err)
+	}
+	if err := oprot.WriteFieldEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field end error 1:id: ", p), err)
+	}
+	return err
 }
 
 func (p *CommentData) writeField2(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if err := oprot.WriteFieldBegin(ctx, "comment_id", thrift.I64, 2); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field begin error 2:comment_id: ", p), err) }
-  if err := oprot.WriteI64(ctx, int64(p.CommentID)); err != nil {
-  return thrift.PrependError(fmt.Sprintf("%T.comment_id (2) field write error: ", p), err) }
-  if err := oprot.WriteFieldEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field end error 2:comment_id: ", p), err) }
-  return err
+	if err := oprot.WriteFieldBegin(ctx, "comment_id", thrift.I64, 2); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field begin error 2:comment_id: ", p), err)
+	}
+	if err := oprot.WriteI64(ctx, int64(p.CommentID)); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T.comment_id (2) field write error: ", p), err)
+	}
+	if err := oprot.WriteFieldEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field end error 2:comment_id: ", p), err)
+	}
+	return err
 }
 
 func (p *CommentData) writeField3(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if err := oprot.WriteFieldBegin(ctx, "user_id", thrift.I64, 3); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field begin error 3:user_id: ", p), err) }
-  if err := oprot.WriteI64(ctx, int64(p.UserID)); err != nil {
-  return thrift.PrependError(fmt.Sprintf("%T.user_id (3) field write error: ", p), err) }
-  if err := oprot.WriteFieldEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field end error 3:user_id: ", p), err) }
-  return err
+	if err := oprot.WriteFieldBegin(ctx, "user_id", thrift.I64, 3); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field begin error 3:user_id: ", p), err)
+	}
+	if err := oprot.WriteI64(ctx, int64(p.UserID)); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T.user_id (3) field write error: ", p), err)
+	}
+	if err := oprot.WriteFieldEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field end error 3:user_id: ", p), err)
+	}
+	return err
 }
 
 func (p *CommentData) writeField4(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if err := oprot.WriteFieldBegin(ctx, "group_id", thrift.I64, 4); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field begin error 4:group_id: ", p), err) }
-  if err := oprot.WriteI64(ctx, int64(p.GroupID)); err != nil {
-  return thrift.PrependError(fmt.Sprintf("%T.group_id (4) field write error: ", p), err) }
-  if err := oprot.WriteFieldEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field end error 4:group_id: ", p), err) }
-  return err
+	if err := oprot.WriteFieldBegin(ctx, "group_id", thrift.I64, 4); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field begin error 4:group_id: ", p), err)
+	}
+	if err := oprot.WriteI64(ctx, int64(p.GroupID)); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T.group_id (4) field write error: ", p), err)
+	}
+	if err := oprot.WriteFieldEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field end error 4:group_id: ", p), err)
+	}
+	return err
 }
 
 func (p *CommentData) writeField5(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if err := oprot.WriteFieldBegin(ctx, "app_id", thrift.I32, 5); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field begin error 5:app_id: ", p), err) }
-  if err := oprot.WriteI32(ctx, int32(p.AppID)); err != nil {
-  return thrift.PrependError(fmt.Sprintf("%T.app_id (5) field write error: ", p), err) }
-  if err := oprot.WriteFieldEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field end error 5:app_id: ", p), err) }
-  return err
+	if err := oprot.WriteFieldBegin(ctx, "app_id", thrift.I32, 5); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field begin error 5:app_id: ", p), err)
+	}
+	if err := oprot.WriteI32(ctx, int32(p.AppID)); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T.app_id (5) field write error: ", p), err)
+	}
+	if err := oprot.WriteFieldEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field end error 5:app_id: ", p), err)
+	}
+	return err
 }
 
 func (p *CommentData) writeField6(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if err := oprot.WriteFieldBegin(ctx, "text", thrift.STRING, 6); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field begin error 6:text: ", p), err) }
-  if err := oprot.WriteString(ctx, string(p.Text)); err != nil {
-  return thrift.PrependError(fmt.Sprintf("%T.text (6) field write error: ", p), err) }
-  if err := oprot.WriteFieldEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field end error 6:text: ", p), err) }
-  return err
+	if err := oprot.WriteFieldBegin(ctx, "text", thrift.STRING, 6); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field begin error 6:text: ", p), err)
+	}
+	if err := oprot.WriteString(ctx, string(p.Text)); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T.text (6) field write error: ", p), err)
+	}
+	if err := oprot.WriteFieldEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field end error 6:text: ", p), err)
+	}
+	return err
 }
 
 func (p *CommentData) writeField7(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if p.IsSetImages() {
-    if err := oprot.WriteFieldBegin(ctx, "images", thrift.LIST, 7); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T write field begin error 7:images: ", p), err) }
-    if err := oprot.WriteListBegin(ctx, thrift.STRING, len(p.Images)); err != nil {
-      return thrift.PrependError("error writing list begin: ", err)
-    }
-    for _, v := range p.Images {
-      if err := oprot.WriteString(ctx, string(v)); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T. (0) field write error: ", p), err) }
-    }
-    if err := oprot.WriteListEnd(ctx); err != nil {
-      return thrift.PrependError("error writing list end: ", err)
-    }
-    if err := oprot.WriteFieldEnd(ctx); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T write field end error 7:images: ", p), err) }
-  }
-  return err
+	if p.IsSetImages() {
+		if err := oprot.WriteFieldBegin(ctx, "images", thrift.LIST, 7); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field begin error 7:images: ", p), err)
+		}
+		if err := oprot.WriteListBegin(ctx, thrift.STRING, len(p.Images)); err != nil {
+			return thrift.PrependError("error writing list begin: ", err)
+		}
+		for _, v := range p.Images {
+			if err := oprot.WriteString(ctx, string(v)); err != nil {
+				return thrift.PrependError(fmt.Sprintf("%T. (0) field write error: ", p), err)
+			}
+		}
+		if err := oprot.WriteListEnd(ctx); err != nil {
+			return thrift.PrependError("error writing list end: ", err)
+		}
+		if err := oprot.WriteFieldEnd(ctx); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field end error 7:images: ", p), err)
+		}
+	}
+	return err
 }
 
 func (p *CommentData) writeField8(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if err := oprot.WriteFieldBegin(ctx, "created_at", thrift.I64, 8); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field begin error 8:created_at: ", p), err) }
-  if err := oprot.WriteI64(ctx, int64(p.CreatedAt)); err != nil {
-  return thrift.PrependError(fmt.Sprintf("%T.created_at (8) field write error: ", p), err) }
-  if err := oprot.WriteFieldEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field end error 8:created_at: ", p), err) }
-  return err
+	if p.IsSetReplyCommentID() {
+		if err := oprot.WriteFieldBegin(ctx, "reply_comment_id", thrift.I64, 8); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field begin error 8:reply_comment_id: ", p), err)
+		}
+		if err := oprot.WriteI64(ctx, int64(*p.ReplyCommentID)); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T.reply_comment_id (8) field write error: ", p), err)
+		}
+		if err := oprot.WriteFieldEnd(ctx); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field end error 8:reply_comment_id: ", p), err)
+		}
+	}
+	return err
 }
 
 func (p *CommentData) writeField9(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if err := oprot.WriteFieldBegin(ctx, "updated_at", thrift.I64, 9); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field begin error 9:updated_at: ", p), err) }
-  if err := oprot.WriteI64(ctx, int64(p.UpdatedAt)); err != nil {
-  return thrift.PrependError(fmt.Sprintf("%T.updated_at (9) field write error: ", p), err) }
-  if err := oprot.WriteFieldEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field end error 9:updated_at: ", p), err) }
-  return err
+	if err := oprot.WriteFieldBegin(ctx, "created_at", thrift.I64, 9); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field begin error 9:created_at: ", p), err)
+	}
+	if err := oprot.WriteI64(ctx, int64(p.CreatedAt)); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T.created_at (9) field write error: ", p), err)
+	}
+	if err := oprot.WriteFieldEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field end error 9:created_at: ", p), err)
+	}
+	return err
 }
 
 func (p *CommentData) writeField10(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if p.IsSetExtra() {
-    if err := oprot.WriteFieldBegin(ctx, "extra", thrift.STRING, 10); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T write field begin error 10:extra: ", p), err) }
-    if err := oprot.WriteString(ctx, string(*p.Extra)); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T.extra (10) field write error: ", p), err) }
-    if err := oprot.WriteFieldEnd(ctx); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T write field end error 10:extra: ", p), err) }
-  }
-  return err
+	if err := oprot.WriteFieldBegin(ctx, "updated_at", thrift.I64, 10); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field begin error 10:updated_at: ", p), err)
+	}
+	if err := oprot.WriteI64(ctx, int64(p.UpdatedAt)); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T.updated_at (10) field write error: ", p), err)
+	}
+	if err := oprot.WriteFieldEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field end error 10:updated_at: ", p), err)
+	}
+	return err
+}
+
+func (p *CommentData) writeField11(ctx context.Context, oprot thrift.TProtocol) (err error) {
+	if p.IsSetExtra() {
+		if err := oprot.WriteFieldBegin(ctx, "extra", thrift.STRING, 11); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field begin error 11:extra: ", p), err)
+		}
+		if err := oprot.WriteString(ctx, string(*p.Extra)); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T.extra (11) field write error: ", p), err)
+		}
+		if err := oprot.WriteFieldEnd(ctx); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field end error 11:extra: ", p), err)
+		}
+	}
+	return err
 }
 
 func (p *CommentData) Equals(other *CommentData) bool {
-  if p == other {
-    return true
-  } else if p == nil || other == nil {
-    return false
-  }
-  if p.ID != other.ID { return false }
-  if p.CommentID != other.CommentID { return false }
-  if p.UserID != other.UserID { return false }
-  if p.GroupID != other.GroupID { return false }
-  if p.AppID != other.AppID { return false }
-  if p.Text != other.Text { return false }
-  if len(p.Images) != len(other.Images) { return false }
-  for i, _tgt := range p.Images {
-    _src7 := other.Images[i]
-    if _tgt != _src7 { return false }
-  }
-  if p.CreatedAt != other.CreatedAt { return false }
-  if p.UpdatedAt != other.UpdatedAt { return false }
-  if p.Extra != other.Extra {
-    if p.Extra == nil || other.Extra == nil {
-      return false
-    }
-    if (*p.Extra) != (*other.Extra) { return false }
-  }
-  return true
+	if p == other {
+		return true
+	} else if p == nil || other == nil {
+		return false
+	}
+	if p.ID != other.ID {
+		return false
+	}
+	if p.CommentID != other.CommentID {
+		return false
+	}
+	if p.UserID != other.UserID {
+		return false
+	}
+	if p.GroupID != other.GroupID {
+		return false
+	}
+	if p.AppID != other.AppID {
+		return false
+	}
+	if p.Text != other.Text {
+		return false
+	}
+	if len(p.Images) != len(other.Images) {
+		return false
+	}
+	for i, _tgt := range p.Images {
+		_src7 := other.Images[i]
+		if _tgt != _src7 {
+			return false
+		}
+	}
+	if p.ReplyCommentID != other.ReplyCommentID {
+		if p.ReplyCommentID == nil || other.ReplyCommentID == nil {
+			return false
+		}
+		if (*p.ReplyCommentID) != (*other.ReplyCommentID) {
+			return false
+		}
+	}
+	if p.CreatedAt != other.CreatedAt {
+		return false
+	}
+	if p.UpdatedAt != other.UpdatedAt {
+		return false
+	}
+	if p.Extra != other.Extra {
+		if p.Extra == nil || other.Extra == nil {
+			return false
+		}
+		if (*p.Extra) != (*other.Extra) {
+			return false
+		}
+	}
+	return true
 }
 
 func (p *CommentData) String() string {
-  if p == nil {
-    return "<nil>"
-  }
-  return fmt.Sprintf("CommentData(%+v)", *p)
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("CommentData(%+v)", *p)
 }
 
 // Attributes:
-//  - CommentID
-//  - Base
+//   - CommentID
+//   - Base
 type DeleteRequest struct {
-  CommentID int64 `thrift:"comment_id,1,required" db:"comment_id" json:"comment_id"`
-  // unused fields # 2 to 254
-  Base *base.RPCRequest `thrift:"Base,255" db:"Base" json:"Base,omitempty"`
+	CommentID int64 `thrift:"comment_id,1,required" db:"comment_id" json:"comment_id"`
+	// unused fields # 2 to 254
+	Base *base.RPCRequest `thrift:"Base,255" db:"Base" json:"Base,omitempty"`
 }
 
 func NewDeleteRequest() *DeleteRequest {
-  return &DeleteRequest{}
+	return &DeleteRequest{}
 }
-
 
 func (p *DeleteRequest) GetCommentID() int64 {
-  return p.CommentID
+	return p.CommentID
 }
+
 var DeleteRequest_Base_DEFAULT *base.RPCRequest
+
 func (p *DeleteRequest) GetBase() *base.RPCRequest {
-  if !p.IsSetBase() {
-    return DeleteRequest_Base_DEFAULT
-  }
-return p.Base
+	if !p.IsSetBase() {
+		return DeleteRequest_Base_DEFAULT
+	}
+	return p.Base
 }
 func (p *DeleteRequest) IsSetBase() bool {
-  return p.Base != nil
+	return p.Base != nil
 }
 
 func (p *DeleteRequest) Read(ctx context.Context, iprot thrift.TProtocol) error {
-  if _, err := iprot.ReadStructBegin(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
-  }
+	if _, err := iprot.ReadStructBegin(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
+	}
 
-  var issetCommentID bool = false;
+	var issetCommentID bool = false
 
-  for {
-    _, fieldTypeId, fieldId, err := iprot.ReadFieldBegin(ctx)
-    if err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
-    }
-    if fieldTypeId == thrift.STOP { break; }
-    switch fieldId {
-    case 1:
-      if fieldTypeId == thrift.I64 {
-        if err := p.ReadField1(ctx, iprot); err != nil {
-          return err
-        }
-        issetCommentID = true
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    case 255:
-      if fieldTypeId == thrift.STRUCT {
-        if err := p.ReadField255(ctx, iprot); err != nil {
-          return err
-        }
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    default:
-      if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-        return err
-      }
-    }
-    if err := iprot.ReadFieldEnd(ctx); err != nil {
-      return err
-    }
-  }
-  if err := iprot.ReadStructEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
-  }
-  if !issetCommentID{
-    return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field CommentID is not set"));
-  }
-  return nil
+	for {
+		_, fieldTypeId, fieldId, err := iprot.ReadFieldBegin(ctx)
+		if err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.I64 {
+				if err := p.ReadField1(ctx, iprot); err != nil {
+					return err
+				}
+				issetCommentID = true
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		case 255:
+			if fieldTypeId == thrift.STRUCT {
+				if err := p.ReadField255(ctx, iprot); err != nil {
+					return err
+				}
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		default:
+			if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+				return err
+			}
+		}
+		if err := iprot.ReadFieldEnd(ctx); err != nil {
+			return err
+		}
+	}
+	if err := iprot.ReadStructEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+	}
+	if !issetCommentID {
+		return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field CommentID is not set"))
+	}
+	return nil
 }
 
-func (p *DeleteRequest)  ReadField1(ctx context.Context, iprot thrift.TProtocol) error {
-  if v, err := iprot.ReadI64(ctx); err != nil {
-  return thrift.PrependError("error reading field 1: ", err)
-} else {
-  p.CommentID = v
-}
-  return nil
+func (p *DeleteRequest) ReadField1(ctx context.Context, iprot thrift.TProtocol) error {
+	if v, err := iprot.ReadI64(ctx); err != nil {
+		return thrift.PrependError("error reading field 1: ", err)
+	} else {
+		p.CommentID = v
+	}
+	return nil
 }
 
-func (p *DeleteRequest)  ReadField255(ctx context.Context, iprot thrift.TProtocol) error {
-  p.Base = &base.RPCRequest{}
-  if err := p.Base.Read(ctx, iprot); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", p.Base), err)
-  }
-  return nil
+func (p *DeleteRequest) ReadField255(ctx context.Context, iprot thrift.TProtocol) error {
+	p.Base = &base.RPCRequest{}
+	if err := p.Base.Read(ctx, iprot); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", p.Base), err)
+	}
+	return nil
 }
 
 func (p *DeleteRequest) Write(ctx context.Context, oprot thrift.TProtocol) error {
-  if err := oprot.WriteStructBegin(ctx, "DeleteRequest"); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err) }
-  if p != nil {
-    if err := p.writeField1(ctx, oprot); err != nil { return err }
-    if err := p.writeField255(ctx, oprot); err != nil { return err }
-  }
-  if err := oprot.WriteFieldStop(ctx); err != nil {
-    return thrift.PrependError("write field stop error: ", err) }
-  if err := oprot.WriteStructEnd(ctx); err != nil {
-    return thrift.PrependError("write struct stop error: ", err) }
-  return nil
+	if err := oprot.WriteStructBegin(ctx, "DeleteRequest"); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+	}
+	if p != nil {
+		if err := p.writeField1(ctx, oprot); err != nil {
+			return err
+		}
+		if err := p.writeField255(ctx, oprot); err != nil {
+			return err
+		}
+	}
+	if err := oprot.WriteFieldStop(ctx); err != nil {
+		return thrift.PrependError("write field stop error: ", err)
+	}
+	if err := oprot.WriteStructEnd(ctx); err != nil {
+		return thrift.PrependError("write struct stop error: ", err)
+	}
+	return nil
 }
 
 func (p *DeleteRequest) writeField1(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if err := oprot.WriteFieldBegin(ctx, "comment_id", thrift.I64, 1); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field begin error 1:comment_id: ", p), err) }
-  if err := oprot.WriteI64(ctx, int64(p.CommentID)); err != nil {
-  return thrift.PrependError(fmt.Sprintf("%T.comment_id (1) field write error: ", p), err) }
-  if err := oprot.WriteFieldEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field end error 1:comment_id: ", p), err) }
-  return err
+	if err := oprot.WriteFieldBegin(ctx, "comment_id", thrift.I64, 1); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field begin error 1:comment_id: ", p), err)
+	}
+	if err := oprot.WriteI64(ctx, int64(p.CommentID)); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T.comment_id (1) field write error: ", p), err)
+	}
+	if err := oprot.WriteFieldEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field end error 1:comment_id: ", p), err)
+	}
+	return err
 }
 
 func (p *DeleteRequest) writeField255(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if p.IsSetBase() {
-    if err := oprot.WriteFieldBegin(ctx, "Base", thrift.STRUCT, 255); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T write field begin error 255:Base: ", p), err) }
-    if err := p.Base.Write(ctx, oprot); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", p.Base), err)
-    }
-    if err := oprot.WriteFieldEnd(ctx); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T write field end error 255:Base: ", p), err) }
-  }
-  return err
+	if p.IsSetBase() {
+		if err := oprot.WriteFieldBegin(ctx, "Base", thrift.STRUCT, 255); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field begin error 255:Base: ", p), err)
+		}
+		if err := p.Base.Write(ctx, oprot); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", p.Base), err)
+		}
+		if err := oprot.WriteFieldEnd(ctx); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field end error 255:Base: ", p), err)
+		}
+	}
+	return err
 }
 
 func (p *DeleteRequest) Equals(other *DeleteRequest) bool {
-  if p == other {
-    return true
-  } else if p == nil || other == nil {
-    return false
-  }
-  if p.CommentID != other.CommentID { return false }
-  if !p.Base.Equals(other.Base) { return false }
-  return true
+	if p == other {
+		return true
+	} else if p == nil || other == nil {
+		return false
+	}
+	if p.CommentID != other.CommentID {
+		return false
+	}
+	if !p.Base.Equals(other.Base) {
+		return false
+	}
+	return true
 }
 
 func (p *DeleteRequest) String() string {
-  if p == nil {
-    return "<nil>"
-  }
-  return fmt.Sprintf("DeleteRequest(%+v)", *p)
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("DeleteRequest(%+v)", *p)
 }
 
 // Attributes:
-//  - Base
+//   - Base
 type DeleteResponse struct {
-  // unused fields # 1 to 254
-  Base *base.RPCResponse `thrift:"Base,255,required" db:"Base" json:"Base"`
+	// unused fields # 1 to 254
+	Base *base.RPCResponse `thrift:"Base,255,required" db:"Base" json:"Base"`
 }
 
 func NewDeleteResponse() *DeleteResponse {
-  return &DeleteResponse{}
+	return &DeleteResponse{}
 }
 
 var DeleteResponse_Base_DEFAULT *base.RPCResponse
+
 func (p *DeleteResponse) GetBase() *base.RPCResponse {
-  if !p.IsSetBase() {
-    return DeleteResponse_Base_DEFAULT
-  }
-return p.Base
+	if !p.IsSetBase() {
+		return DeleteResponse_Base_DEFAULT
+	}
+	return p.Base
 }
 func (p *DeleteResponse) IsSetBase() bool {
-  return p.Base != nil
+	return p.Base != nil
 }
 
 func (p *DeleteResponse) Read(ctx context.Context, iprot thrift.TProtocol) error {
-  if _, err := iprot.ReadStructBegin(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
-  }
+	if _, err := iprot.ReadStructBegin(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
+	}
 
-  var issetBase bool = false;
+	var issetBase bool = false
 
-  for {
-    _, fieldTypeId, fieldId, err := iprot.ReadFieldBegin(ctx)
-    if err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
-    }
-    if fieldTypeId == thrift.STOP { break; }
-    switch fieldId {
-    case 255:
-      if fieldTypeId == thrift.STRUCT {
-        if err := p.ReadField255(ctx, iprot); err != nil {
-          return err
-        }
-        issetBase = true
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    default:
-      if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-        return err
-      }
-    }
-    if err := iprot.ReadFieldEnd(ctx); err != nil {
-      return err
-    }
-  }
-  if err := iprot.ReadStructEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
-  }
-  if !issetBase{
-    return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field Base is not set"));
-  }
-  return nil
+	for {
+		_, fieldTypeId, fieldId, err := iprot.ReadFieldBegin(ctx)
+		if err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+		switch fieldId {
+		case 255:
+			if fieldTypeId == thrift.STRUCT {
+				if err := p.ReadField255(ctx, iprot); err != nil {
+					return err
+				}
+				issetBase = true
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		default:
+			if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+				return err
+			}
+		}
+		if err := iprot.ReadFieldEnd(ctx); err != nil {
+			return err
+		}
+	}
+	if err := iprot.ReadStructEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+	}
+	if !issetBase {
+		return thrift.NewTProtocolExceptionWithType(thrift.INVALID_DATA, fmt.Errorf("Required field Base is not set"))
+	}
+	return nil
 }
 
-func (p *DeleteResponse)  ReadField255(ctx context.Context, iprot thrift.TProtocol) error {
-  p.Base = &base.RPCResponse{}
-  if err := p.Base.Read(ctx, iprot); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", p.Base), err)
-  }
-  return nil
+func (p *DeleteResponse) ReadField255(ctx context.Context, iprot thrift.TProtocol) error {
+	p.Base = &base.RPCResponse{}
+	if err := p.Base.Read(ctx, iprot); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", p.Base), err)
+	}
+	return nil
 }
 
 func (p *DeleteResponse) Write(ctx context.Context, oprot thrift.TProtocol) error {
-  if err := oprot.WriteStructBegin(ctx, "DeleteResponse"); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err) }
-  if p != nil {
-    if err := p.writeField255(ctx, oprot); err != nil { return err }
-  }
-  if err := oprot.WriteFieldStop(ctx); err != nil {
-    return thrift.PrependError("write field stop error: ", err) }
-  if err := oprot.WriteStructEnd(ctx); err != nil {
-    return thrift.PrependError("write struct stop error: ", err) }
-  return nil
+	if err := oprot.WriteStructBegin(ctx, "DeleteResponse"); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+	}
+	if p != nil {
+		if err := p.writeField255(ctx, oprot); err != nil {
+			return err
+		}
+	}
+	if err := oprot.WriteFieldStop(ctx); err != nil {
+		return thrift.PrependError("write field stop error: ", err)
+	}
+	if err := oprot.WriteStructEnd(ctx); err != nil {
+		return thrift.PrependError("write struct stop error: ", err)
+	}
+	return nil
 }
 
 func (p *DeleteResponse) writeField255(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if err := oprot.WriteFieldBegin(ctx, "Base", thrift.STRUCT, 255); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field begin error 255:Base: ", p), err) }
-  if err := p.Base.Write(ctx, oprot); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", p.Base), err)
-  }
-  if err := oprot.WriteFieldEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field end error 255:Base: ", p), err) }
-  return err
+	if err := oprot.WriteFieldBegin(ctx, "Base", thrift.STRUCT, 255); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field begin error 255:Base: ", p), err)
+	}
+	if err := p.Base.Write(ctx, oprot); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", p.Base), err)
+	}
+	if err := oprot.WriteFieldEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field end error 255:Base: ", p), err)
+	}
+	return err
 }
 
 func (p *DeleteResponse) Equals(other *DeleteResponse) bool {
-  if p == other {
-    return true
-  } else if p == nil || other == nil {
-    return false
-  }
-  if !p.Base.Equals(other.Base) { return false }
-  return true
+	if p == other {
+		return true
+	} else if p == nil || other == nil {
+		return false
+	}
+	if !p.Base.Equals(other.Base) {
+		return false
+	}
+	return true
 }
 
 func (p *DeleteResponse) String() string {
-  if p == nil {
-    return "<nil>"
-  }
-  return fmt.Sprintf("DeleteResponse(%+v)", *p)
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("DeleteResponse(%+v)", *p)
 }
 
 type CommentHandler interface {
-  // Parameters:
-  //  - Req
-  GenCommentID(ctx context.Context, req *GenCommentIDRequest) (_r *GenCommentIDResponse, _err error)
-  // Parameters:
-  //  - Req
-  Post(ctx context.Context, req *PostRequest) (_r *PostResponse, _err error)
-  // Parameters:
-  //  - Req
-  List(ctx context.Context, req *ListRequest) (_r *ListResponse, _err error)
-  // Parameters:
-  //  - Req
-  Delete(ctx context.Context, req *DeleteRequest) (_r *DeleteResponse, _err error)
+	// Parameters:
+	//  - Req
+	GenCommentID(ctx context.Context, req *GenCommentIDRequest) (_r *GenCommentIDResponse, _err error)
+	// Parameters:
+	//  - Req
+	Post(ctx context.Context, req *PostRequest) (_r *PostResponse, _err error)
+	// Parameters:
+	//  - Req
+	List(ctx context.Context, req *ListRequest) (_r *ListResponse, _err error)
+	// Parameters:
+	//  - Req
+	Delete(ctx context.Context, req *DeleteRequest) (_r *DeleteResponse, _err error)
 }
 
 type CommentHandlerClient struct {
-  c thrift.TClient
-  meta thrift.ResponseMeta
+	c    thrift.TClient
+	meta thrift.ResponseMeta
 }
 
 func NewCommentHandlerClientFactory(t thrift.TTransport, f thrift.TProtocolFactory) *CommentHandlerClient {
-  return &CommentHandlerClient{
-    c: thrift.NewTStandardClient(f.GetProtocol(t), f.GetProtocol(t)),
-  }
+	return &CommentHandlerClient{
+		c: thrift.NewTStandardClient(f.GetProtocol(t), f.GetProtocol(t)),
+	}
 }
 
 func NewCommentHandlerClientProtocol(t thrift.TTransport, iprot thrift.TProtocol, oprot thrift.TProtocol) *CommentHandlerClient {
-  return &CommentHandlerClient{
-    c: thrift.NewTStandardClient(iprot, oprot),
-  }
+	return &CommentHandlerClient{
+		c: thrift.NewTStandardClient(iprot, oprot),
+	}
 }
 
 func NewCommentHandlerClient(c thrift.TClient) *CommentHandlerClient {
-  return &CommentHandlerClient{
-    c: c,
-  }
+	return &CommentHandlerClient{
+		c: c,
+	}
 }
 
 func (p *CommentHandlerClient) Client_() thrift.TClient {
-  return p.c
+	return p.c
 }
 
 func (p *CommentHandlerClient) LastResponseMeta_() thrift.ResponseMeta {
-  return p.meta
+	return p.meta
 }
 
 func (p *CommentHandlerClient) SetLastResponseMeta_(meta thrift.ResponseMeta) {
-  p.meta = meta
+	p.meta = meta
 }
 
 // Parameters:
-//  - Req
+//   - Req
 func (p *CommentHandlerClient) GenCommentID(ctx context.Context, req *GenCommentIDRequest) (_r *GenCommentIDResponse, _err error) {
-  var _args8 CommentHandlerGenCommentIDArgs
-  _args8.Req = req
-  var _result10 CommentHandlerGenCommentIDResult
-  var _meta9 thrift.ResponseMeta
-  _meta9, _err = p.Client_().Call(ctx, "GenCommentID", &_args8, &_result10)
-  p.SetLastResponseMeta_(_meta9)
-  if _err != nil {
-    return
-  }
-  if _ret11 := _result10.GetSuccess(); _ret11 != nil {
-    return _ret11, nil
-  }
-  return nil, thrift.NewTApplicationException(thrift.MISSING_RESULT, "GenCommentID failed: unknown result")
+	var _args8 CommentHandlerGenCommentIDArgs
+	_args8.Req = req
+	var _result10 CommentHandlerGenCommentIDResult
+	var _meta9 thrift.ResponseMeta
+	_meta9, _err = p.Client_().Call(ctx, "GenCommentID", &_args8, &_result10)
+	p.SetLastResponseMeta_(_meta9)
+	if _err != nil {
+		return
+	}
+	if _ret11 := _result10.GetSuccess(); _ret11 != nil {
+		return _ret11, nil
+	}
+	return nil, thrift.NewTApplicationException(thrift.MISSING_RESULT, "GenCommentID failed: unknown result")
 }
 
 // Parameters:
-//  - Req
+//   - Req
 func (p *CommentHandlerClient) Post(ctx context.Context, req *PostRequest) (_r *PostResponse, _err error) {
-  var _args12 CommentHandlerPostArgs
-  _args12.Req = req
-  var _result14 CommentHandlerPostResult
-  var _meta13 thrift.ResponseMeta
-  _meta13, _err = p.Client_().Call(ctx, "Post", &_args12, &_result14)
-  p.SetLastResponseMeta_(_meta13)
-  if _err != nil {
-    return
-  }
-  if _ret15 := _result14.GetSuccess(); _ret15 != nil {
-    return _ret15, nil
-  }
-  return nil, thrift.NewTApplicationException(thrift.MISSING_RESULT, "Post failed: unknown result")
+	var _args12 CommentHandlerPostArgs
+	_args12.Req = req
+	var _result14 CommentHandlerPostResult
+	var _meta13 thrift.ResponseMeta
+	_meta13, _err = p.Client_().Call(ctx, "Post", &_args12, &_result14)
+	p.SetLastResponseMeta_(_meta13)
+	if _err != nil {
+		return
+	}
+	if _ret15 := _result14.GetSuccess(); _ret15 != nil {
+		return _ret15, nil
+	}
+	return nil, thrift.NewTApplicationException(thrift.MISSING_RESULT, "Post failed: unknown result")
 }
 
 // Parameters:
-//  - Req
+//   - Req
 func (p *CommentHandlerClient) List(ctx context.Context, req *ListRequest) (_r *ListResponse, _err error) {
-  var _args16 CommentHandlerListArgs
-  _args16.Req = req
-  var _result18 CommentHandlerListResult
-  var _meta17 thrift.ResponseMeta
-  _meta17, _err = p.Client_().Call(ctx, "List", &_args16, &_result18)
-  p.SetLastResponseMeta_(_meta17)
-  if _err != nil {
-    return
-  }
-  if _ret19 := _result18.GetSuccess(); _ret19 != nil {
-    return _ret19, nil
-  }
-  return nil, thrift.NewTApplicationException(thrift.MISSING_RESULT, "List failed: unknown result")
+	var _args16 CommentHandlerListArgs
+	_args16.Req = req
+	var _result18 CommentHandlerListResult
+	var _meta17 thrift.ResponseMeta
+	_meta17, _err = p.Client_().Call(ctx, "List", &_args16, &_result18)
+	p.SetLastResponseMeta_(_meta17)
+	if _err != nil {
+		return
+	}
+	if _ret19 := _result18.GetSuccess(); _ret19 != nil {
+		return _ret19, nil
+	}
+	return nil, thrift.NewTApplicationException(thrift.MISSING_RESULT, "List failed: unknown result")
 }
 
 // Parameters:
-//  - Req
+//   - Req
 func (p *CommentHandlerClient) Delete(ctx context.Context, req *DeleteRequest) (_r *DeleteResponse, _err error) {
-  var _args20 CommentHandlerDeleteArgs
-  _args20.Req = req
-  var _result22 CommentHandlerDeleteResult
-  var _meta21 thrift.ResponseMeta
-  _meta21, _err = p.Client_().Call(ctx, "Delete", &_args20, &_result22)
-  p.SetLastResponseMeta_(_meta21)
-  if _err != nil {
-    return
-  }
-  if _ret23 := _result22.GetSuccess(); _ret23 != nil {
-    return _ret23, nil
-  }
-  return nil, thrift.NewTApplicationException(thrift.MISSING_RESULT, "Delete failed: unknown result")
+	var _args20 CommentHandlerDeleteArgs
+	_args20.Req = req
+	var _result22 CommentHandlerDeleteResult
+	var _meta21 thrift.ResponseMeta
+	_meta21, _err = p.Client_().Call(ctx, "Delete", &_args20, &_result22)
+	p.SetLastResponseMeta_(_meta21)
+	if _err != nil {
+		return
+	}
+	if _ret23 := _result22.GetSuccess(); _ret23 != nil {
+		return _ret23, nil
+	}
+	return nil, thrift.NewTApplicationException(thrift.MISSING_RESULT, "Delete failed: unknown result")
 }
 
 type CommentHandlerProcessor struct {
-  processorMap map[string]thrift.TProcessorFunction
-  handler CommentHandler
+	processorMap map[string]thrift.TProcessorFunction
+	handler      CommentHandler
 }
 
 func (p *CommentHandlerProcessor) AddToProcessorMap(key string, processor thrift.TProcessorFunction) {
-  p.processorMap[key] = processor
+	p.processorMap[key] = processor
 }
 
 func (p *CommentHandlerProcessor) GetProcessorFunction(key string) (processor thrift.TProcessorFunction, ok bool) {
-  processor, ok = p.processorMap[key]
-  return processor, ok
+	processor, ok = p.processorMap[key]
+	return processor, ok
 }
 
 func (p *CommentHandlerProcessor) ProcessorMap() map[string]thrift.TProcessorFunction {
-  return p.processorMap
+	return p.processorMap
 }
 
 func NewCommentHandlerProcessor(handler CommentHandler) *CommentHandlerProcessor {
 
-  self24 := &CommentHandlerProcessor{handler:handler, processorMap:make(map[string]thrift.TProcessorFunction)}
-  self24.processorMap["GenCommentID"] = &commentHandlerProcessorGenCommentID{handler:handler}
-  self24.processorMap["Post"] = &commentHandlerProcessorPost{handler:handler}
-  self24.processorMap["List"] = &commentHandlerProcessorList{handler:handler}
-  self24.processorMap["Delete"] = &commentHandlerProcessorDelete{handler:handler}
-return self24
+	self24 := &CommentHandlerProcessor{handler: handler, processorMap: make(map[string]thrift.TProcessorFunction)}
+	self24.processorMap["GenCommentID"] = &commentHandlerProcessorGenCommentID{handler: handler}
+	self24.processorMap["Post"] = &commentHandlerProcessorPost{handler: handler}
+	self24.processorMap["List"] = &commentHandlerProcessorList{handler: handler}
+	self24.processorMap["Delete"] = &commentHandlerProcessorDelete{handler: handler}
+	return self24
 }
 
 func (p *CommentHandlerProcessor) Process(ctx context.Context, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
-  name, _, seqId, err2 := iprot.ReadMessageBegin(ctx)
-  if err2 != nil { return false, thrift.WrapTException(err2) }
-  if processor, ok := p.GetProcessorFunction(name); ok {
-    return processor.Process(ctx, seqId, iprot, oprot)
-  }
-  iprot.Skip(ctx, thrift.STRUCT)
-  iprot.ReadMessageEnd(ctx)
-  x25 := thrift.NewTApplicationException(thrift.UNKNOWN_METHOD, "Unknown function " + name)
-  oprot.WriteMessageBegin(ctx, name, thrift.EXCEPTION, seqId)
-  x25.Write(ctx, oprot)
-  oprot.WriteMessageEnd(ctx)
-  oprot.Flush(ctx)
-  return false, x25
+	name, _, seqId, err2 := iprot.ReadMessageBegin(ctx)
+	if err2 != nil {
+		return false, thrift.WrapTException(err2)
+	}
+	if processor, ok := p.GetProcessorFunction(name); ok {
+		return processor.Process(ctx, seqId, iprot, oprot)
+	}
+	iprot.Skip(ctx, thrift.STRUCT)
+	iprot.ReadMessageEnd(ctx)
+	x25 := thrift.NewTApplicationException(thrift.UNKNOWN_METHOD, "Unknown function "+name)
+	oprot.WriteMessageBegin(ctx, name, thrift.EXCEPTION, seqId)
+	x25.Write(ctx, oprot)
+	oprot.WriteMessageEnd(ctx)
+	oprot.Flush(ctx)
+	return false, x25
 
 }
 
 type commentHandlerProcessorGenCommentID struct {
-  handler CommentHandler
+	handler CommentHandler
 }
 
 func (p *commentHandlerProcessorGenCommentID) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
-  var _write_err26 error
-  args := CommentHandlerGenCommentIDArgs{}
-  if err2 := args.Read(ctx, iprot); err2 != nil {
-    iprot.ReadMessageEnd(ctx)
-    x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err2.Error())
-    oprot.WriteMessageBegin(ctx, "GenCommentID", thrift.EXCEPTION, seqId)
-    x.Write(ctx, oprot)
-    oprot.WriteMessageEnd(ctx)
-    oprot.Flush(ctx)
-    return false, thrift.WrapTException(err2)
-  }
-  iprot.ReadMessageEnd(ctx)
+	var _write_err26 error
+	args := CommentHandlerGenCommentIDArgs{}
+	if err2 := args.Read(ctx, iprot); err2 != nil {
+		iprot.ReadMessageEnd(ctx)
+		x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err2.Error())
+		oprot.WriteMessageBegin(ctx, "GenCommentID", thrift.EXCEPTION, seqId)
+		x.Write(ctx, oprot)
+		oprot.WriteMessageEnd(ctx)
+		oprot.Flush(ctx)
+		return false, thrift.WrapTException(err2)
+	}
+	iprot.ReadMessageEnd(ctx)
 
-  tickerCancel := func() {}
-  // Start a goroutine to do server side connectivity check.
-  if thrift.ServerConnectivityCheckInterval > 0 {
-    var cancel context.CancelFunc
-    ctx, cancel = context.WithCancel(ctx)
-    defer cancel()
-    var tickerCtx context.Context
-    tickerCtx, tickerCancel = context.WithCancel(context.Background())
-    defer tickerCancel()
-    go func(ctx context.Context, cancel context.CancelFunc) {
-      ticker := time.NewTicker(thrift.ServerConnectivityCheckInterval)
-      defer ticker.Stop()
-      for {
-        select {
-        case <-ctx.Done():
-          return
-        case <-ticker.C:
-          if !iprot.Transport().IsOpen() {
-            cancel()
-            return
-          }
-        }
-      }
-    }(tickerCtx, cancel)
-  }
+	tickerCancel := func() {}
+	// Start a goroutine to do server side connectivity check.
+	if thrift.ServerConnectivityCheckInterval > 0 {
+		var cancel context.CancelFunc
+		ctx, cancel = context.WithCancel(ctx)
+		defer cancel()
+		var tickerCtx context.Context
+		tickerCtx, tickerCancel = context.WithCancel(context.Background())
+		defer tickerCancel()
+		go func(ctx context.Context, cancel context.CancelFunc) {
+			ticker := time.NewTicker(thrift.ServerConnectivityCheckInterval)
+			defer ticker.Stop()
+			for {
+				select {
+				case <-ctx.Done():
+					return
+				case <-ticker.C:
+					if !iprot.Transport().IsOpen() {
+						cancel()
+						return
+					}
+				}
+			}
+		}(tickerCtx, cancel)
+	}
 
-  result := CommentHandlerGenCommentIDResult{}
-  if retval, err2 := p.handler.GenCommentID(ctx, args.Req); err2 != nil {
-    tickerCancel()
-    err = thrift.WrapTException(err2)
-    if errors.Is(err2, thrift.ErrAbandonRequest) {
-      return false, thrift.WrapTException(err2)
-    }
-    _exc27 := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing GenCommentID: " + err2.Error())
-    if err2 := oprot.WriteMessageBegin(ctx, "GenCommentID", thrift.EXCEPTION, seqId); err2 != nil {
-      _write_err26 = thrift.WrapTException(err2)
-    }
-    if err2 := _exc27.Write(ctx, oprot); _write_err26 == nil && err2 != nil {
-      _write_err26 = thrift.WrapTException(err2)
-    }
-    if err2 := oprot.WriteMessageEnd(ctx); _write_err26 == nil && err2 != nil {
-      _write_err26 = thrift.WrapTException(err2)
-    }
-    if err2 := oprot.Flush(ctx); _write_err26 == nil && err2 != nil {
-      _write_err26 = thrift.WrapTException(err2)
-    }
-    if _write_err26 != nil {
-      return false, thrift.WrapTException(_write_err26)
-    }
-    return true, err
-  } else {
-    result.Success = retval
-  }
-  tickerCancel()
-  if err2 := oprot.WriteMessageBegin(ctx, "GenCommentID", thrift.REPLY, seqId); err2 != nil {
-    _write_err26 = thrift.WrapTException(err2)
-  }
-  if err2 := result.Write(ctx, oprot); _write_err26 == nil && err2 != nil {
-    _write_err26 = thrift.WrapTException(err2)
-  }
-  if err2 := oprot.WriteMessageEnd(ctx); _write_err26 == nil && err2 != nil {
-    _write_err26 = thrift.WrapTException(err2)
-  }
-  if err2 := oprot.Flush(ctx); _write_err26 == nil && err2 != nil {
-    _write_err26 = thrift.WrapTException(err2)
-  }
-  if _write_err26 != nil {
-    return false, thrift.WrapTException(_write_err26)
-  }
-  return true, err
+	result := CommentHandlerGenCommentIDResult{}
+	if retval, err2 := p.handler.GenCommentID(ctx, args.Req); err2 != nil {
+		tickerCancel()
+		err = thrift.WrapTException(err2)
+		if errors.Is(err2, thrift.ErrAbandonRequest) {
+			return false, thrift.WrapTException(err2)
+		}
+		_exc27 := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing GenCommentID: "+err2.Error())
+		if err2 := oprot.WriteMessageBegin(ctx, "GenCommentID", thrift.EXCEPTION, seqId); err2 != nil {
+			_write_err26 = thrift.WrapTException(err2)
+		}
+		if err2 := _exc27.Write(ctx, oprot); _write_err26 == nil && err2 != nil {
+			_write_err26 = thrift.WrapTException(err2)
+		}
+		if err2 := oprot.WriteMessageEnd(ctx); _write_err26 == nil && err2 != nil {
+			_write_err26 = thrift.WrapTException(err2)
+		}
+		if err2 := oprot.Flush(ctx); _write_err26 == nil && err2 != nil {
+			_write_err26 = thrift.WrapTException(err2)
+		}
+		if _write_err26 != nil {
+			return false, thrift.WrapTException(_write_err26)
+		}
+		return true, err
+	} else {
+		result.Success = retval
+	}
+	tickerCancel()
+	if err2 := oprot.WriteMessageBegin(ctx, "GenCommentID", thrift.REPLY, seqId); err2 != nil {
+		_write_err26 = thrift.WrapTException(err2)
+	}
+	if err2 := result.Write(ctx, oprot); _write_err26 == nil && err2 != nil {
+		_write_err26 = thrift.WrapTException(err2)
+	}
+	if err2 := oprot.WriteMessageEnd(ctx); _write_err26 == nil && err2 != nil {
+		_write_err26 = thrift.WrapTException(err2)
+	}
+	if err2 := oprot.Flush(ctx); _write_err26 == nil && err2 != nil {
+		_write_err26 = thrift.WrapTException(err2)
+	}
+	if _write_err26 != nil {
+		return false, thrift.WrapTException(_write_err26)
+	}
+	return true, err
 }
 
 type commentHandlerProcessorPost struct {
-  handler CommentHandler
+	handler CommentHandler
 }
 
 func (p *commentHandlerProcessorPost) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
-  var _write_err28 error
-  args := CommentHandlerPostArgs{}
-  if err2 := args.Read(ctx, iprot); err2 != nil {
-    iprot.ReadMessageEnd(ctx)
-    x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err2.Error())
-    oprot.WriteMessageBegin(ctx, "Post", thrift.EXCEPTION, seqId)
-    x.Write(ctx, oprot)
-    oprot.WriteMessageEnd(ctx)
-    oprot.Flush(ctx)
-    return false, thrift.WrapTException(err2)
-  }
-  iprot.ReadMessageEnd(ctx)
+	var _write_err28 error
+	args := CommentHandlerPostArgs{}
+	if err2 := args.Read(ctx, iprot); err2 != nil {
+		iprot.ReadMessageEnd(ctx)
+		x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err2.Error())
+		oprot.WriteMessageBegin(ctx, "Post", thrift.EXCEPTION, seqId)
+		x.Write(ctx, oprot)
+		oprot.WriteMessageEnd(ctx)
+		oprot.Flush(ctx)
+		return false, thrift.WrapTException(err2)
+	}
+	iprot.ReadMessageEnd(ctx)
 
-  tickerCancel := func() {}
-  // Start a goroutine to do server side connectivity check.
-  if thrift.ServerConnectivityCheckInterval > 0 {
-    var cancel context.CancelFunc
-    ctx, cancel = context.WithCancel(ctx)
-    defer cancel()
-    var tickerCtx context.Context
-    tickerCtx, tickerCancel = context.WithCancel(context.Background())
-    defer tickerCancel()
-    go func(ctx context.Context, cancel context.CancelFunc) {
-      ticker := time.NewTicker(thrift.ServerConnectivityCheckInterval)
-      defer ticker.Stop()
-      for {
-        select {
-        case <-ctx.Done():
-          return
-        case <-ticker.C:
-          if !iprot.Transport().IsOpen() {
-            cancel()
-            return
-          }
-        }
-      }
-    }(tickerCtx, cancel)
-  }
+	tickerCancel := func() {}
+	// Start a goroutine to do server side connectivity check.
+	if thrift.ServerConnectivityCheckInterval > 0 {
+		var cancel context.CancelFunc
+		ctx, cancel = context.WithCancel(ctx)
+		defer cancel()
+		var tickerCtx context.Context
+		tickerCtx, tickerCancel = context.WithCancel(context.Background())
+		defer tickerCancel()
+		go func(ctx context.Context, cancel context.CancelFunc) {
+			ticker := time.NewTicker(thrift.ServerConnectivityCheckInterval)
+			defer ticker.Stop()
+			for {
+				select {
+				case <-ctx.Done():
+					return
+				case <-ticker.C:
+					if !iprot.Transport().IsOpen() {
+						cancel()
+						return
+					}
+				}
+			}
+		}(tickerCtx, cancel)
+	}
 
-  result := CommentHandlerPostResult{}
-  if retval, err2 := p.handler.Post(ctx, args.Req); err2 != nil {
-    tickerCancel()
-    err = thrift.WrapTException(err2)
-    if errors.Is(err2, thrift.ErrAbandonRequest) {
-      return false, thrift.WrapTException(err2)
-    }
-    _exc29 := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing Post: " + err2.Error())
-    if err2 := oprot.WriteMessageBegin(ctx, "Post", thrift.EXCEPTION, seqId); err2 != nil {
-      _write_err28 = thrift.WrapTException(err2)
-    }
-    if err2 := _exc29.Write(ctx, oprot); _write_err28 == nil && err2 != nil {
-      _write_err28 = thrift.WrapTException(err2)
-    }
-    if err2 := oprot.WriteMessageEnd(ctx); _write_err28 == nil && err2 != nil {
-      _write_err28 = thrift.WrapTException(err2)
-    }
-    if err2 := oprot.Flush(ctx); _write_err28 == nil && err2 != nil {
-      _write_err28 = thrift.WrapTException(err2)
-    }
-    if _write_err28 != nil {
-      return false, thrift.WrapTException(_write_err28)
-    }
-    return true, err
-  } else {
-    result.Success = retval
-  }
-  tickerCancel()
-  if err2 := oprot.WriteMessageBegin(ctx, "Post", thrift.REPLY, seqId); err2 != nil {
-    _write_err28 = thrift.WrapTException(err2)
-  }
-  if err2 := result.Write(ctx, oprot); _write_err28 == nil && err2 != nil {
-    _write_err28 = thrift.WrapTException(err2)
-  }
-  if err2 := oprot.WriteMessageEnd(ctx); _write_err28 == nil && err2 != nil {
-    _write_err28 = thrift.WrapTException(err2)
-  }
-  if err2 := oprot.Flush(ctx); _write_err28 == nil && err2 != nil {
-    _write_err28 = thrift.WrapTException(err2)
-  }
-  if _write_err28 != nil {
-    return false, thrift.WrapTException(_write_err28)
-  }
-  return true, err
+	result := CommentHandlerPostResult{}
+	if retval, err2 := p.handler.Post(ctx, args.Req); err2 != nil {
+		tickerCancel()
+		err = thrift.WrapTException(err2)
+		if errors.Is(err2, thrift.ErrAbandonRequest) {
+			return false, thrift.WrapTException(err2)
+		}
+		_exc29 := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing Post: "+err2.Error())
+		if err2 := oprot.WriteMessageBegin(ctx, "Post", thrift.EXCEPTION, seqId); err2 != nil {
+			_write_err28 = thrift.WrapTException(err2)
+		}
+		if err2 := _exc29.Write(ctx, oprot); _write_err28 == nil && err2 != nil {
+			_write_err28 = thrift.WrapTException(err2)
+		}
+		if err2 := oprot.WriteMessageEnd(ctx); _write_err28 == nil && err2 != nil {
+			_write_err28 = thrift.WrapTException(err2)
+		}
+		if err2 := oprot.Flush(ctx); _write_err28 == nil && err2 != nil {
+			_write_err28 = thrift.WrapTException(err2)
+		}
+		if _write_err28 != nil {
+			return false, thrift.WrapTException(_write_err28)
+		}
+		return true, err
+	} else {
+		result.Success = retval
+	}
+	tickerCancel()
+	if err2 := oprot.WriteMessageBegin(ctx, "Post", thrift.REPLY, seqId); err2 != nil {
+		_write_err28 = thrift.WrapTException(err2)
+	}
+	if err2 := result.Write(ctx, oprot); _write_err28 == nil && err2 != nil {
+		_write_err28 = thrift.WrapTException(err2)
+	}
+	if err2 := oprot.WriteMessageEnd(ctx); _write_err28 == nil && err2 != nil {
+		_write_err28 = thrift.WrapTException(err2)
+	}
+	if err2 := oprot.Flush(ctx); _write_err28 == nil && err2 != nil {
+		_write_err28 = thrift.WrapTException(err2)
+	}
+	if _write_err28 != nil {
+		return false, thrift.WrapTException(_write_err28)
+	}
+	return true, err
 }
 
 type commentHandlerProcessorList struct {
-  handler CommentHandler
+	handler CommentHandler
 }
 
 func (p *commentHandlerProcessorList) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
-  var _write_err30 error
-  args := CommentHandlerListArgs{}
-  if err2 := args.Read(ctx, iprot); err2 != nil {
-    iprot.ReadMessageEnd(ctx)
-    x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err2.Error())
-    oprot.WriteMessageBegin(ctx, "List", thrift.EXCEPTION, seqId)
-    x.Write(ctx, oprot)
-    oprot.WriteMessageEnd(ctx)
-    oprot.Flush(ctx)
-    return false, thrift.WrapTException(err2)
-  }
-  iprot.ReadMessageEnd(ctx)
+	var _write_err30 error
+	args := CommentHandlerListArgs{}
+	if err2 := args.Read(ctx, iprot); err2 != nil {
+		iprot.ReadMessageEnd(ctx)
+		x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err2.Error())
+		oprot.WriteMessageBegin(ctx, "List", thrift.EXCEPTION, seqId)
+		x.Write(ctx, oprot)
+		oprot.WriteMessageEnd(ctx)
+		oprot.Flush(ctx)
+		return false, thrift.WrapTException(err2)
+	}
+	iprot.ReadMessageEnd(ctx)
 
-  tickerCancel := func() {}
-  // Start a goroutine to do server side connectivity check.
-  if thrift.ServerConnectivityCheckInterval > 0 {
-    var cancel context.CancelFunc
-    ctx, cancel = context.WithCancel(ctx)
-    defer cancel()
-    var tickerCtx context.Context
-    tickerCtx, tickerCancel = context.WithCancel(context.Background())
-    defer tickerCancel()
-    go func(ctx context.Context, cancel context.CancelFunc) {
-      ticker := time.NewTicker(thrift.ServerConnectivityCheckInterval)
-      defer ticker.Stop()
-      for {
-        select {
-        case <-ctx.Done():
-          return
-        case <-ticker.C:
-          if !iprot.Transport().IsOpen() {
-            cancel()
-            return
-          }
-        }
-      }
-    }(tickerCtx, cancel)
-  }
+	tickerCancel := func() {}
+	// Start a goroutine to do server side connectivity check.
+	if thrift.ServerConnectivityCheckInterval > 0 {
+		var cancel context.CancelFunc
+		ctx, cancel = context.WithCancel(ctx)
+		defer cancel()
+		var tickerCtx context.Context
+		tickerCtx, tickerCancel = context.WithCancel(context.Background())
+		defer tickerCancel()
+		go func(ctx context.Context, cancel context.CancelFunc) {
+			ticker := time.NewTicker(thrift.ServerConnectivityCheckInterval)
+			defer ticker.Stop()
+			for {
+				select {
+				case <-ctx.Done():
+					return
+				case <-ticker.C:
+					if !iprot.Transport().IsOpen() {
+						cancel()
+						return
+					}
+				}
+			}
+		}(tickerCtx, cancel)
+	}
 
-  result := CommentHandlerListResult{}
-  if retval, err2 := p.handler.List(ctx, args.Req); err2 != nil {
-    tickerCancel()
-    err = thrift.WrapTException(err2)
-    if errors.Is(err2, thrift.ErrAbandonRequest) {
-      return false, thrift.WrapTException(err2)
-    }
-    _exc31 := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing List: " + err2.Error())
-    if err2 := oprot.WriteMessageBegin(ctx, "List", thrift.EXCEPTION, seqId); err2 != nil {
-      _write_err30 = thrift.WrapTException(err2)
-    }
-    if err2 := _exc31.Write(ctx, oprot); _write_err30 == nil && err2 != nil {
-      _write_err30 = thrift.WrapTException(err2)
-    }
-    if err2 := oprot.WriteMessageEnd(ctx); _write_err30 == nil && err2 != nil {
-      _write_err30 = thrift.WrapTException(err2)
-    }
-    if err2 := oprot.Flush(ctx); _write_err30 == nil && err2 != nil {
-      _write_err30 = thrift.WrapTException(err2)
-    }
-    if _write_err30 != nil {
-      return false, thrift.WrapTException(_write_err30)
-    }
-    return true, err
-  } else {
-    result.Success = retval
-  }
-  tickerCancel()
-  if err2 := oprot.WriteMessageBegin(ctx, "List", thrift.REPLY, seqId); err2 != nil {
-    _write_err30 = thrift.WrapTException(err2)
-  }
-  if err2 := result.Write(ctx, oprot); _write_err30 == nil && err2 != nil {
-    _write_err30 = thrift.WrapTException(err2)
-  }
-  if err2 := oprot.WriteMessageEnd(ctx); _write_err30 == nil && err2 != nil {
-    _write_err30 = thrift.WrapTException(err2)
-  }
-  if err2 := oprot.Flush(ctx); _write_err30 == nil && err2 != nil {
-    _write_err30 = thrift.WrapTException(err2)
-  }
-  if _write_err30 != nil {
-    return false, thrift.WrapTException(_write_err30)
-  }
-  return true, err
+	result := CommentHandlerListResult{}
+	if retval, err2 := p.handler.List(ctx, args.Req); err2 != nil {
+		tickerCancel()
+		err = thrift.WrapTException(err2)
+		if errors.Is(err2, thrift.ErrAbandonRequest) {
+			return false, thrift.WrapTException(err2)
+		}
+		_exc31 := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing List: "+err2.Error())
+		if err2 := oprot.WriteMessageBegin(ctx, "List", thrift.EXCEPTION, seqId); err2 != nil {
+			_write_err30 = thrift.WrapTException(err2)
+		}
+		if err2 := _exc31.Write(ctx, oprot); _write_err30 == nil && err2 != nil {
+			_write_err30 = thrift.WrapTException(err2)
+		}
+		if err2 := oprot.WriteMessageEnd(ctx); _write_err30 == nil && err2 != nil {
+			_write_err30 = thrift.WrapTException(err2)
+		}
+		if err2 := oprot.Flush(ctx); _write_err30 == nil && err2 != nil {
+			_write_err30 = thrift.WrapTException(err2)
+		}
+		if _write_err30 != nil {
+			return false, thrift.WrapTException(_write_err30)
+		}
+		return true, err
+	} else {
+		result.Success = retval
+	}
+	tickerCancel()
+	if err2 := oprot.WriteMessageBegin(ctx, "List", thrift.REPLY, seqId); err2 != nil {
+		_write_err30 = thrift.WrapTException(err2)
+	}
+	if err2 := result.Write(ctx, oprot); _write_err30 == nil && err2 != nil {
+		_write_err30 = thrift.WrapTException(err2)
+	}
+	if err2 := oprot.WriteMessageEnd(ctx); _write_err30 == nil && err2 != nil {
+		_write_err30 = thrift.WrapTException(err2)
+	}
+	if err2 := oprot.Flush(ctx); _write_err30 == nil && err2 != nil {
+		_write_err30 = thrift.WrapTException(err2)
+	}
+	if _write_err30 != nil {
+		return false, thrift.WrapTException(_write_err30)
+	}
+	return true, err
 }
 
 type commentHandlerProcessorDelete struct {
-  handler CommentHandler
+	handler CommentHandler
 }
 
 func (p *commentHandlerProcessorDelete) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
-  var _write_err32 error
-  args := CommentHandlerDeleteArgs{}
-  if err2 := args.Read(ctx, iprot); err2 != nil {
-    iprot.ReadMessageEnd(ctx)
-    x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err2.Error())
-    oprot.WriteMessageBegin(ctx, "Delete", thrift.EXCEPTION, seqId)
-    x.Write(ctx, oprot)
-    oprot.WriteMessageEnd(ctx)
-    oprot.Flush(ctx)
-    return false, thrift.WrapTException(err2)
-  }
-  iprot.ReadMessageEnd(ctx)
+	var _write_err32 error
+	args := CommentHandlerDeleteArgs{}
+	if err2 := args.Read(ctx, iprot); err2 != nil {
+		iprot.ReadMessageEnd(ctx)
+		x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err2.Error())
+		oprot.WriteMessageBegin(ctx, "Delete", thrift.EXCEPTION, seqId)
+		x.Write(ctx, oprot)
+		oprot.WriteMessageEnd(ctx)
+		oprot.Flush(ctx)
+		return false, thrift.WrapTException(err2)
+	}
+	iprot.ReadMessageEnd(ctx)
 
-  tickerCancel := func() {}
-  // Start a goroutine to do server side connectivity check.
-  if thrift.ServerConnectivityCheckInterval > 0 {
-    var cancel context.CancelFunc
-    ctx, cancel = context.WithCancel(ctx)
-    defer cancel()
-    var tickerCtx context.Context
-    tickerCtx, tickerCancel = context.WithCancel(context.Background())
-    defer tickerCancel()
-    go func(ctx context.Context, cancel context.CancelFunc) {
-      ticker := time.NewTicker(thrift.ServerConnectivityCheckInterval)
-      defer ticker.Stop()
-      for {
-        select {
-        case <-ctx.Done():
-          return
-        case <-ticker.C:
-          if !iprot.Transport().IsOpen() {
-            cancel()
-            return
-          }
-        }
-      }
-    }(tickerCtx, cancel)
-  }
+	tickerCancel := func() {}
+	// Start a goroutine to do server side connectivity check.
+	if thrift.ServerConnectivityCheckInterval > 0 {
+		var cancel context.CancelFunc
+		ctx, cancel = context.WithCancel(ctx)
+		defer cancel()
+		var tickerCtx context.Context
+		tickerCtx, tickerCancel = context.WithCancel(context.Background())
+		defer tickerCancel()
+		go func(ctx context.Context, cancel context.CancelFunc) {
+			ticker := time.NewTicker(thrift.ServerConnectivityCheckInterval)
+			defer ticker.Stop()
+			for {
+				select {
+				case <-ctx.Done():
+					return
+				case <-ticker.C:
+					if !iprot.Transport().IsOpen() {
+						cancel()
+						return
+					}
+				}
+			}
+		}(tickerCtx, cancel)
+	}
 
-  result := CommentHandlerDeleteResult{}
-  if retval, err2 := p.handler.Delete(ctx, args.Req); err2 != nil {
-    tickerCancel()
-    err = thrift.WrapTException(err2)
-    if errors.Is(err2, thrift.ErrAbandonRequest) {
-      return false, thrift.WrapTException(err2)
-    }
-    _exc33 := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing Delete: " + err2.Error())
-    if err2 := oprot.WriteMessageBegin(ctx, "Delete", thrift.EXCEPTION, seqId); err2 != nil {
-      _write_err32 = thrift.WrapTException(err2)
-    }
-    if err2 := _exc33.Write(ctx, oprot); _write_err32 == nil && err2 != nil {
-      _write_err32 = thrift.WrapTException(err2)
-    }
-    if err2 := oprot.WriteMessageEnd(ctx); _write_err32 == nil && err2 != nil {
-      _write_err32 = thrift.WrapTException(err2)
-    }
-    if err2 := oprot.Flush(ctx); _write_err32 == nil && err2 != nil {
-      _write_err32 = thrift.WrapTException(err2)
-    }
-    if _write_err32 != nil {
-      return false, thrift.WrapTException(_write_err32)
-    }
-    return true, err
-  } else {
-    result.Success = retval
-  }
-  tickerCancel()
-  if err2 := oprot.WriteMessageBegin(ctx, "Delete", thrift.REPLY, seqId); err2 != nil {
-    _write_err32 = thrift.WrapTException(err2)
-  }
-  if err2 := result.Write(ctx, oprot); _write_err32 == nil && err2 != nil {
-    _write_err32 = thrift.WrapTException(err2)
-  }
-  if err2 := oprot.WriteMessageEnd(ctx); _write_err32 == nil && err2 != nil {
-    _write_err32 = thrift.WrapTException(err2)
-  }
-  if err2 := oprot.Flush(ctx); _write_err32 == nil && err2 != nil {
-    _write_err32 = thrift.WrapTException(err2)
-  }
-  if _write_err32 != nil {
-    return false, thrift.WrapTException(_write_err32)
-  }
-  return true, err
+	result := CommentHandlerDeleteResult{}
+	if retval, err2 := p.handler.Delete(ctx, args.Req); err2 != nil {
+		tickerCancel()
+		err = thrift.WrapTException(err2)
+		if errors.Is(err2, thrift.ErrAbandonRequest) {
+			return false, thrift.WrapTException(err2)
+		}
+		_exc33 := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing Delete: "+err2.Error())
+		if err2 := oprot.WriteMessageBegin(ctx, "Delete", thrift.EXCEPTION, seqId); err2 != nil {
+			_write_err32 = thrift.WrapTException(err2)
+		}
+		if err2 := _exc33.Write(ctx, oprot); _write_err32 == nil && err2 != nil {
+			_write_err32 = thrift.WrapTException(err2)
+		}
+		if err2 := oprot.WriteMessageEnd(ctx); _write_err32 == nil && err2 != nil {
+			_write_err32 = thrift.WrapTException(err2)
+		}
+		if err2 := oprot.Flush(ctx); _write_err32 == nil && err2 != nil {
+			_write_err32 = thrift.WrapTException(err2)
+		}
+		if _write_err32 != nil {
+			return false, thrift.WrapTException(_write_err32)
+		}
+		return true, err
+	} else {
+		result.Success = retval
+	}
+	tickerCancel()
+	if err2 := oprot.WriteMessageBegin(ctx, "Delete", thrift.REPLY, seqId); err2 != nil {
+		_write_err32 = thrift.WrapTException(err2)
+	}
+	if err2 := result.Write(ctx, oprot); _write_err32 == nil && err2 != nil {
+		_write_err32 = thrift.WrapTException(err2)
+	}
+	if err2 := oprot.WriteMessageEnd(ctx); _write_err32 == nil && err2 != nil {
+		_write_err32 = thrift.WrapTException(err2)
+	}
+	if err2 := oprot.Flush(ctx); _write_err32 == nil && err2 != nil {
+		_write_err32 = thrift.WrapTException(err2)
+	}
+	if _write_err32 != nil {
+		return false, thrift.WrapTException(_write_err32)
+	}
+	return true, err
 }
-
 
 // HELPER FUNCTIONS AND STRUCTURES
 
 // Attributes:
-//  - Req
+//   - Req
 type CommentHandlerGenCommentIDArgs struct {
-  Req *GenCommentIDRequest `thrift:"req,1" db:"req" json:"req"`
+	Req *GenCommentIDRequest `thrift:"req,1" db:"req" json:"req"`
 }
 
 func NewCommentHandlerGenCommentIDArgs() *CommentHandlerGenCommentIDArgs {
-  return &CommentHandlerGenCommentIDArgs{}
+	return &CommentHandlerGenCommentIDArgs{}
 }
 
 var CommentHandlerGenCommentIDArgs_Req_DEFAULT *GenCommentIDRequest
+
 func (p *CommentHandlerGenCommentIDArgs) GetReq() *GenCommentIDRequest {
-  if !p.IsSetReq() {
-    return CommentHandlerGenCommentIDArgs_Req_DEFAULT
-  }
-return p.Req
+	if !p.IsSetReq() {
+		return CommentHandlerGenCommentIDArgs_Req_DEFAULT
+	}
+	return p.Req
 }
 func (p *CommentHandlerGenCommentIDArgs) IsSetReq() bool {
-  return p.Req != nil
+	return p.Req != nil
 }
 
 func (p *CommentHandlerGenCommentIDArgs) Read(ctx context.Context, iprot thrift.TProtocol) error {
-  if _, err := iprot.ReadStructBegin(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
-  }
+	if _, err := iprot.ReadStructBegin(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
+	}
 
-
-  for {
-    _, fieldTypeId, fieldId, err := iprot.ReadFieldBegin(ctx)
-    if err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
-    }
-    if fieldTypeId == thrift.STOP { break; }
-    switch fieldId {
-    case 1:
-      if fieldTypeId == thrift.STRUCT {
-        if err := p.ReadField1(ctx, iprot); err != nil {
-          return err
-        }
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    default:
-      if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-        return err
-      }
-    }
-    if err := iprot.ReadFieldEnd(ctx); err != nil {
-      return err
-    }
-  }
-  if err := iprot.ReadStructEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
-  }
-  return nil
+	for {
+		_, fieldTypeId, fieldId, err := iprot.ReadFieldBegin(ctx)
+		if err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.STRUCT {
+				if err := p.ReadField1(ctx, iprot); err != nil {
+					return err
+				}
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		default:
+			if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+				return err
+			}
+		}
+		if err := iprot.ReadFieldEnd(ctx); err != nil {
+			return err
+		}
+	}
+	if err := iprot.ReadStructEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+	}
+	return nil
 }
 
-func (p *CommentHandlerGenCommentIDArgs)  ReadField1(ctx context.Context, iprot thrift.TProtocol) error {
-  p.Req = &GenCommentIDRequest{}
-  if err := p.Req.Read(ctx, iprot); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", p.Req), err)
-  }
-  return nil
+func (p *CommentHandlerGenCommentIDArgs) ReadField1(ctx context.Context, iprot thrift.TProtocol) error {
+	p.Req = &GenCommentIDRequest{}
+	if err := p.Req.Read(ctx, iprot); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", p.Req), err)
+	}
+	return nil
 }
 
 func (p *CommentHandlerGenCommentIDArgs) Write(ctx context.Context, oprot thrift.TProtocol) error {
-  if err := oprot.WriteStructBegin(ctx, "GenCommentID_args"); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err) }
-  if p != nil {
-    if err := p.writeField1(ctx, oprot); err != nil { return err }
-  }
-  if err := oprot.WriteFieldStop(ctx); err != nil {
-    return thrift.PrependError("write field stop error: ", err) }
-  if err := oprot.WriteStructEnd(ctx); err != nil {
-    return thrift.PrependError("write struct stop error: ", err) }
-  return nil
+	if err := oprot.WriteStructBegin(ctx, "GenCommentID_args"); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+	}
+	if p != nil {
+		if err := p.writeField1(ctx, oprot); err != nil {
+			return err
+		}
+	}
+	if err := oprot.WriteFieldStop(ctx); err != nil {
+		return thrift.PrependError("write field stop error: ", err)
+	}
+	if err := oprot.WriteStructEnd(ctx); err != nil {
+		return thrift.PrependError("write struct stop error: ", err)
+	}
+	return nil
 }
 
 func (p *CommentHandlerGenCommentIDArgs) writeField1(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if err := oprot.WriteFieldBegin(ctx, "req", thrift.STRUCT, 1); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field begin error 1:req: ", p), err) }
-  if err := p.Req.Write(ctx, oprot); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", p.Req), err)
-  }
-  if err := oprot.WriteFieldEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field end error 1:req: ", p), err) }
-  return err
+	if err := oprot.WriteFieldBegin(ctx, "req", thrift.STRUCT, 1); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field begin error 1:req: ", p), err)
+	}
+	if err := p.Req.Write(ctx, oprot); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", p.Req), err)
+	}
+	if err := oprot.WriteFieldEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field end error 1:req: ", p), err)
+	}
+	return err
 }
 
 func (p *CommentHandlerGenCommentIDArgs) String() string {
-  if p == nil {
-    return "<nil>"
-  }
-  return fmt.Sprintf("CommentHandlerGenCommentIDArgs(%+v)", *p)
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("CommentHandlerGenCommentIDArgs(%+v)", *p)
 }
 
 // Attributes:
-//  - Success
+//   - Success
 type CommentHandlerGenCommentIDResult struct {
-  Success *GenCommentIDResponse `thrift:"success,0" db:"success" json:"success,omitempty"`
+	Success *GenCommentIDResponse `thrift:"success,0" db:"success" json:"success,omitempty"`
 }
 
 func NewCommentHandlerGenCommentIDResult() *CommentHandlerGenCommentIDResult {
-  return &CommentHandlerGenCommentIDResult{}
+	return &CommentHandlerGenCommentIDResult{}
 }
 
 var CommentHandlerGenCommentIDResult_Success_DEFAULT *GenCommentIDResponse
+
 func (p *CommentHandlerGenCommentIDResult) GetSuccess() *GenCommentIDResponse {
-  if !p.IsSetSuccess() {
-    return CommentHandlerGenCommentIDResult_Success_DEFAULT
-  }
-return p.Success
+	if !p.IsSetSuccess() {
+		return CommentHandlerGenCommentIDResult_Success_DEFAULT
+	}
+	return p.Success
 }
 func (p *CommentHandlerGenCommentIDResult) IsSetSuccess() bool {
-  return p.Success != nil
+	return p.Success != nil
 }
 
 func (p *CommentHandlerGenCommentIDResult) Read(ctx context.Context, iprot thrift.TProtocol) error {
-  if _, err := iprot.ReadStructBegin(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
-  }
+	if _, err := iprot.ReadStructBegin(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
+	}
 
-
-  for {
-    _, fieldTypeId, fieldId, err := iprot.ReadFieldBegin(ctx)
-    if err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
-    }
-    if fieldTypeId == thrift.STOP { break; }
-    switch fieldId {
-    case 0:
-      if fieldTypeId == thrift.STRUCT {
-        if err := p.ReadField0(ctx, iprot); err != nil {
-          return err
-        }
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    default:
-      if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-        return err
-      }
-    }
-    if err := iprot.ReadFieldEnd(ctx); err != nil {
-      return err
-    }
-  }
-  if err := iprot.ReadStructEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
-  }
-  return nil
+	for {
+		_, fieldTypeId, fieldId, err := iprot.ReadFieldBegin(ctx)
+		if err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+		switch fieldId {
+		case 0:
+			if fieldTypeId == thrift.STRUCT {
+				if err := p.ReadField0(ctx, iprot); err != nil {
+					return err
+				}
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		default:
+			if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+				return err
+			}
+		}
+		if err := iprot.ReadFieldEnd(ctx); err != nil {
+			return err
+		}
+	}
+	if err := iprot.ReadStructEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+	}
+	return nil
 }
 
-func (p *CommentHandlerGenCommentIDResult)  ReadField0(ctx context.Context, iprot thrift.TProtocol) error {
-  p.Success = &GenCommentIDResponse{}
-  if err := p.Success.Read(ctx, iprot); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", p.Success), err)
-  }
-  return nil
+func (p *CommentHandlerGenCommentIDResult) ReadField0(ctx context.Context, iprot thrift.TProtocol) error {
+	p.Success = &GenCommentIDResponse{}
+	if err := p.Success.Read(ctx, iprot); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", p.Success), err)
+	}
+	return nil
 }
 
 func (p *CommentHandlerGenCommentIDResult) Write(ctx context.Context, oprot thrift.TProtocol) error {
-  if err := oprot.WriteStructBegin(ctx, "GenCommentID_result"); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err) }
-  if p != nil {
-    if err := p.writeField0(ctx, oprot); err != nil { return err }
-  }
-  if err := oprot.WriteFieldStop(ctx); err != nil {
-    return thrift.PrependError("write field stop error: ", err) }
-  if err := oprot.WriteStructEnd(ctx); err != nil {
-    return thrift.PrependError("write struct stop error: ", err) }
-  return nil
+	if err := oprot.WriteStructBegin(ctx, "GenCommentID_result"); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+	}
+	if p != nil {
+		if err := p.writeField0(ctx, oprot); err != nil {
+			return err
+		}
+	}
+	if err := oprot.WriteFieldStop(ctx); err != nil {
+		return thrift.PrependError("write field stop error: ", err)
+	}
+	if err := oprot.WriteStructEnd(ctx); err != nil {
+		return thrift.PrependError("write struct stop error: ", err)
+	}
+	return nil
 }
 
 func (p *CommentHandlerGenCommentIDResult) writeField0(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if p.IsSetSuccess() {
-    if err := oprot.WriteFieldBegin(ctx, "success", thrift.STRUCT, 0); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T write field begin error 0:success: ", p), err) }
-    if err := p.Success.Write(ctx, oprot); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", p.Success), err)
-    }
-    if err := oprot.WriteFieldEnd(ctx); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T write field end error 0:success: ", p), err) }
-  }
-  return err
+	if p.IsSetSuccess() {
+		if err := oprot.WriteFieldBegin(ctx, "success", thrift.STRUCT, 0); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field begin error 0:success: ", p), err)
+		}
+		if err := p.Success.Write(ctx, oprot); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", p.Success), err)
+		}
+		if err := oprot.WriteFieldEnd(ctx); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field end error 0:success: ", p), err)
+		}
+	}
+	return err
 }
 
 func (p *CommentHandlerGenCommentIDResult) String() string {
-  if p == nil {
-    return "<nil>"
-  }
-  return fmt.Sprintf("CommentHandlerGenCommentIDResult(%+v)", *p)
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("CommentHandlerGenCommentIDResult(%+v)", *p)
 }
 
 // Attributes:
-//  - Req
+//   - Req
 type CommentHandlerPostArgs struct {
-  Req *PostRequest `thrift:"req,1" db:"req" json:"req"`
+	Req *PostRequest `thrift:"req,1" db:"req" json:"req"`
 }
 
 func NewCommentHandlerPostArgs() *CommentHandlerPostArgs {
-  return &CommentHandlerPostArgs{}
+	return &CommentHandlerPostArgs{}
 }
 
 var CommentHandlerPostArgs_Req_DEFAULT *PostRequest
+
 func (p *CommentHandlerPostArgs) GetReq() *PostRequest {
-  if !p.IsSetReq() {
-    return CommentHandlerPostArgs_Req_DEFAULT
-  }
-return p.Req
+	if !p.IsSetReq() {
+		return CommentHandlerPostArgs_Req_DEFAULT
+	}
+	return p.Req
 }
 func (p *CommentHandlerPostArgs) IsSetReq() bool {
-  return p.Req != nil
+	return p.Req != nil
 }
 
 func (p *CommentHandlerPostArgs) Read(ctx context.Context, iprot thrift.TProtocol) error {
-  if _, err := iprot.ReadStructBegin(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
-  }
+	if _, err := iprot.ReadStructBegin(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
+	}
 
-
-  for {
-    _, fieldTypeId, fieldId, err := iprot.ReadFieldBegin(ctx)
-    if err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
-    }
-    if fieldTypeId == thrift.STOP { break; }
-    switch fieldId {
-    case 1:
-      if fieldTypeId == thrift.STRUCT {
-        if err := p.ReadField1(ctx, iprot); err != nil {
-          return err
-        }
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    default:
-      if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-        return err
-      }
-    }
-    if err := iprot.ReadFieldEnd(ctx); err != nil {
-      return err
-    }
-  }
-  if err := iprot.ReadStructEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
-  }
-  return nil
+	for {
+		_, fieldTypeId, fieldId, err := iprot.ReadFieldBegin(ctx)
+		if err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.STRUCT {
+				if err := p.ReadField1(ctx, iprot); err != nil {
+					return err
+				}
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		default:
+			if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+				return err
+			}
+		}
+		if err := iprot.ReadFieldEnd(ctx); err != nil {
+			return err
+		}
+	}
+	if err := iprot.ReadStructEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+	}
+	return nil
 }
 
-func (p *CommentHandlerPostArgs)  ReadField1(ctx context.Context, iprot thrift.TProtocol) error {
-  p.Req = &PostRequest{}
-  if err := p.Req.Read(ctx, iprot); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", p.Req), err)
-  }
-  return nil
+func (p *CommentHandlerPostArgs) ReadField1(ctx context.Context, iprot thrift.TProtocol) error {
+	p.Req = &PostRequest{}
+	if err := p.Req.Read(ctx, iprot); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", p.Req), err)
+	}
+	return nil
 }
 
 func (p *CommentHandlerPostArgs) Write(ctx context.Context, oprot thrift.TProtocol) error {
-  if err := oprot.WriteStructBegin(ctx, "Post_args"); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err) }
-  if p != nil {
-    if err := p.writeField1(ctx, oprot); err != nil { return err }
-  }
-  if err := oprot.WriteFieldStop(ctx); err != nil {
-    return thrift.PrependError("write field stop error: ", err) }
-  if err := oprot.WriteStructEnd(ctx); err != nil {
-    return thrift.PrependError("write struct stop error: ", err) }
-  return nil
+	if err := oprot.WriteStructBegin(ctx, "Post_args"); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+	}
+	if p != nil {
+		if err := p.writeField1(ctx, oprot); err != nil {
+			return err
+		}
+	}
+	if err := oprot.WriteFieldStop(ctx); err != nil {
+		return thrift.PrependError("write field stop error: ", err)
+	}
+	if err := oprot.WriteStructEnd(ctx); err != nil {
+		return thrift.PrependError("write struct stop error: ", err)
+	}
+	return nil
 }
 
 func (p *CommentHandlerPostArgs) writeField1(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if err := oprot.WriteFieldBegin(ctx, "req", thrift.STRUCT, 1); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field begin error 1:req: ", p), err) }
-  if err := p.Req.Write(ctx, oprot); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", p.Req), err)
-  }
-  if err := oprot.WriteFieldEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field end error 1:req: ", p), err) }
-  return err
+	if err := oprot.WriteFieldBegin(ctx, "req", thrift.STRUCT, 1); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field begin error 1:req: ", p), err)
+	}
+	if err := p.Req.Write(ctx, oprot); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", p.Req), err)
+	}
+	if err := oprot.WriteFieldEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field end error 1:req: ", p), err)
+	}
+	return err
 }
 
 func (p *CommentHandlerPostArgs) String() string {
-  if p == nil {
-    return "<nil>"
-  }
-  return fmt.Sprintf("CommentHandlerPostArgs(%+v)", *p)
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("CommentHandlerPostArgs(%+v)", *p)
 }
 
 // Attributes:
-//  - Success
+//   - Success
 type CommentHandlerPostResult struct {
-  Success *PostResponse `thrift:"success,0" db:"success" json:"success,omitempty"`
+	Success *PostResponse `thrift:"success,0" db:"success" json:"success,omitempty"`
 }
 
 func NewCommentHandlerPostResult() *CommentHandlerPostResult {
-  return &CommentHandlerPostResult{}
+	return &CommentHandlerPostResult{}
 }
 
 var CommentHandlerPostResult_Success_DEFAULT *PostResponse
+
 func (p *CommentHandlerPostResult) GetSuccess() *PostResponse {
-  if !p.IsSetSuccess() {
-    return CommentHandlerPostResult_Success_DEFAULT
-  }
-return p.Success
+	if !p.IsSetSuccess() {
+		return CommentHandlerPostResult_Success_DEFAULT
+	}
+	return p.Success
 }
 func (p *CommentHandlerPostResult) IsSetSuccess() bool {
-  return p.Success != nil
+	return p.Success != nil
 }
 
 func (p *CommentHandlerPostResult) Read(ctx context.Context, iprot thrift.TProtocol) error {
-  if _, err := iprot.ReadStructBegin(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
-  }
+	if _, err := iprot.ReadStructBegin(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
+	}
 
-
-  for {
-    _, fieldTypeId, fieldId, err := iprot.ReadFieldBegin(ctx)
-    if err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
-    }
-    if fieldTypeId == thrift.STOP { break; }
-    switch fieldId {
-    case 0:
-      if fieldTypeId == thrift.STRUCT {
-        if err := p.ReadField0(ctx, iprot); err != nil {
-          return err
-        }
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    default:
-      if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-        return err
-      }
-    }
-    if err := iprot.ReadFieldEnd(ctx); err != nil {
-      return err
-    }
-  }
-  if err := iprot.ReadStructEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
-  }
-  return nil
+	for {
+		_, fieldTypeId, fieldId, err := iprot.ReadFieldBegin(ctx)
+		if err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+		switch fieldId {
+		case 0:
+			if fieldTypeId == thrift.STRUCT {
+				if err := p.ReadField0(ctx, iprot); err != nil {
+					return err
+				}
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		default:
+			if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+				return err
+			}
+		}
+		if err := iprot.ReadFieldEnd(ctx); err != nil {
+			return err
+		}
+	}
+	if err := iprot.ReadStructEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+	}
+	return nil
 }
 
-func (p *CommentHandlerPostResult)  ReadField0(ctx context.Context, iprot thrift.TProtocol) error {
-  p.Success = &PostResponse{}
-  if err := p.Success.Read(ctx, iprot); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", p.Success), err)
-  }
-  return nil
+func (p *CommentHandlerPostResult) ReadField0(ctx context.Context, iprot thrift.TProtocol) error {
+	p.Success = &PostResponse{}
+	if err := p.Success.Read(ctx, iprot); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", p.Success), err)
+	}
+	return nil
 }
 
 func (p *CommentHandlerPostResult) Write(ctx context.Context, oprot thrift.TProtocol) error {
-  if err := oprot.WriteStructBegin(ctx, "Post_result"); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err) }
-  if p != nil {
-    if err := p.writeField0(ctx, oprot); err != nil { return err }
-  }
-  if err := oprot.WriteFieldStop(ctx); err != nil {
-    return thrift.PrependError("write field stop error: ", err) }
-  if err := oprot.WriteStructEnd(ctx); err != nil {
-    return thrift.PrependError("write struct stop error: ", err) }
-  return nil
+	if err := oprot.WriteStructBegin(ctx, "Post_result"); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+	}
+	if p != nil {
+		if err := p.writeField0(ctx, oprot); err != nil {
+			return err
+		}
+	}
+	if err := oprot.WriteFieldStop(ctx); err != nil {
+		return thrift.PrependError("write field stop error: ", err)
+	}
+	if err := oprot.WriteStructEnd(ctx); err != nil {
+		return thrift.PrependError("write struct stop error: ", err)
+	}
+	return nil
 }
 
 func (p *CommentHandlerPostResult) writeField0(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if p.IsSetSuccess() {
-    if err := oprot.WriteFieldBegin(ctx, "success", thrift.STRUCT, 0); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T write field begin error 0:success: ", p), err) }
-    if err := p.Success.Write(ctx, oprot); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", p.Success), err)
-    }
-    if err := oprot.WriteFieldEnd(ctx); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T write field end error 0:success: ", p), err) }
-  }
-  return err
+	if p.IsSetSuccess() {
+		if err := oprot.WriteFieldBegin(ctx, "success", thrift.STRUCT, 0); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field begin error 0:success: ", p), err)
+		}
+		if err := p.Success.Write(ctx, oprot); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", p.Success), err)
+		}
+		if err := oprot.WriteFieldEnd(ctx); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field end error 0:success: ", p), err)
+		}
+	}
+	return err
 }
 
 func (p *CommentHandlerPostResult) String() string {
-  if p == nil {
-    return "<nil>"
-  }
-  return fmt.Sprintf("CommentHandlerPostResult(%+v)", *p)
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("CommentHandlerPostResult(%+v)", *p)
 }
 
 // Attributes:
-//  - Req
+//   - Req
 type CommentHandlerListArgs struct {
-  Req *ListRequest `thrift:"req,1" db:"req" json:"req"`
+	Req *ListRequest `thrift:"req,1" db:"req" json:"req"`
 }
 
 func NewCommentHandlerListArgs() *CommentHandlerListArgs {
-  return &CommentHandlerListArgs{}
+	return &CommentHandlerListArgs{}
 }
 
 var CommentHandlerListArgs_Req_DEFAULT *ListRequest
+
 func (p *CommentHandlerListArgs) GetReq() *ListRequest {
-  if !p.IsSetReq() {
-    return CommentHandlerListArgs_Req_DEFAULT
-  }
-return p.Req
+	if !p.IsSetReq() {
+		return CommentHandlerListArgs_Req_DEFAULT
+	}
+	return p.Req
 }
 func (p *CommentHandlerListArgs) IsSetReq() bool {
-  return p.Req != nil
+	return p.Req != nil
 }
 
 func (p *CommentHandlerListArgs) Read(ctx context.Context, iprot thrift.TProtocol) error {
-  if _, err := iprot.ReadStructBegin(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
-  }
+	if _, err := iprot.ReadStructBegin(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
+	}
 
-
-  for {
-    _, fieldTypeId, fieldId, err := iprot.ReadFieldBegin(ctx)
-    if err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
-    }
-    if fieldTypeId == thrift.STOP { break; }
-    switch fieldId {
-    case 1:
-      if fieldTypeId == thrift.STRUCT {
-        if err := p.ReadField1(ctx, iprot); err != nil {
-          return err
-        }
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    default:
-      if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-        return err
-      }
-    }
-    if err := iprot.ReadFieldEnd(ctx); err != nil {
-      return err
-    }
-  }
-  if err := iprot.ReadStructEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
-  }
-  return nil
+	for {
+		_, fieldTypeId, fieldId, err := iprot.ReadFieldBegin(ctx)
+		if err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.STRUCT {
+				if err := p.ReadField1(ctx, iprot); err != nil {
+					return err
+				}
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		default:
+			if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+				return err
+			}
+		}
+		if err := iprot.ReadFieldEnd(ctx); err != nil {
+			return err
+		}
+	}
+	if err := iprot.ReadStructEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+	}
+	return nil
 }
 
-func (p *CommentHandlerListArgs)  ReadField1(ctx context.Context, iprot thrift.TProtocol) error {
-  p.Req = &ListRequest{}
-  if err := p.Req.Read(ctx, iprot); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", p.Req), err)
-  }
-  return nil
+func (p *CommentHandlerListArgs) ReadField1(ctx context.Context, iprot thrift.TProtocol) error {
+	p.Req = &ListRequest{}
+	if err := p.Req.Read(ctx, iprot); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", p.Req), err)
+	}
+	return nil
 }
 
 func (p *CommentHandlerListArgs) Write(ctx context.Context, oprot thrift.TProtocol) error {
-  if err := oprot.WriteStructBegin(ctx, "List_args"); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err) }
-  if p != nil {
-    if err := p.writeField1(ctx, oprot); err != nil { return err }
-  }
-  if err := oprot.WriteFieldStop(ctx); err != nil {
-    return thrift.PrependError("write field stop error: ", err) }
-  if err := oprot.WriteStructEnd(ctx); err != nil {
-    return thrift.PrependError("write struct stop error: ", err) }
-  return nil
+	if err := oprot.WriteStructBegin(ctx, "List_args"); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+	}
+	if p != nil {
+		if err := p.writeField1(ctx, oprot); err != nil {
+			return err
+		}
+	}
+	if err := oprot.WriteFieldStop(ctx); err != nil {
+		return thrift.PrependError("write field stop error: ", err)
+	}
+	if err := oprot.WriteStructEnd(ctx); err != nil {
+		return thrift.PrependError("write struct stop error: ", err)
+	}
+	return nil
 }
 
 func (p *CommentHandlerListArgs) writeField1(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if err := oprot.WriteFieldBegin(ctx, "req", thrift.STRUCT, 1); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field begin error 1:req: ", p), err) }
-  if err := p.Req.Write(ctx, oprot); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", p.Req), err)
-  }
-  if err := oprot.WriteFieldEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field end error 1:req: ", p), err) }
-  return err
+	if err := oprot.WriteFieldBegin(ctx, "req", thrift.STRUCT, 1); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field begin error 1:req: ", p), err)
+	}
+	if err := p.Req.Write(ctx, oprot); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", p.Req), err)
+	}
+	if err := oprot.WriteFieldEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field end error 1:req: ", p), err)
+	}
+	return err
 }
 
 func (p *CommentHandlerListArgs) String() string {
-  if p == nil {
-    return "<nil>"
-  }
-  return fmt.Sprintf("CommentHandlerListArgs(%+v)", *p)
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("CommentHandlerListArgs(%+v)", *p)
 }
 
 // Attributes:
-//  - Success
+//   - Success
 type CommentHandlerListResult struct {
-  Success *ListResponse `thrift:"success,0" db:"success" json:"success,omitempty"`
+	Success *ListResponse `thrift:"success,0" db:"success" json:"success,omitempty"`
 }
 
 func NewCommentHandlerListResult() *CommentHandlerListResult {
-  return &CommentHandlerListResult{}
+	return &CommentHandlerListResult{}
 }
 
 var CommentHandlerListResult_Success_DEFAULT *ListResponse
+
 func (p *CommentHandlerListResult) GetSuccess() *ListResponse {
-  if !p.IsSetSuccess() {
-    return CommentHandlerListResult_Success_DEFAULT
-  }
-return p.Success
+	if !p.IsSetSuccess() {
+		return CommentHandlerListResult_Success_DEFAULT
+	}
+	return p.Success
 }
 func (p *CommentHandlerListResult) IsSetSuccess() bool {
-  return p.Success != nil
+	return p.Success != nil
 }
 
 func (p *CommentHandlerListResult) Read(ctx context.Context, iprot thrift.TProtocol) error {
-  if _, err := iprot.ReadStructBegin(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
-  }
+	if _, err := iprot.ReadStructBegin(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
+	}
 
-
-  for {
-    _, fieldTypeId, fieldId, err := iprot.ReadFieldBegin(ctx)
-    if err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
-    }
-    if fieldTypeId == thrift.STOP { break; }
-    switch fieldId {
-    case 0:
-      if fieldTypeId == thrift.STRUCT {
-        if err := p.ReadField0(ctx, iprot); err != nil {
-          return err
-        }
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    default:
-      if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-        return err
-      }
-    }
-    if err := iprot.ReadFieldEnd(ctx); err != nil {
-      return err
-    }
-  }
-  if err := iprot.ReadStructEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
-  }
-  return nil
+	for {
+		_, fieldTypeId, fieldId, err := iprot.ReadFieldBegin(ctx)
+		if err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+		switch fieldId {
+		case 0:
+			if fieldTypeId == thrift.STRUCT {
+				if err := p.ReadField0(ctx, iprot); err != nil {
+					return err
+				}
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		default:
+			if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+				return err
+			}
+		}
+		if err := iprot.ReadFieldEnd(ctx); err != nil {
+			return err
+		}
+	}
+	if err := iprot.ReadStructEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+	}
+	return nil
 }
 
-func (p *CommentHandlerListResult)  ReadField0(ctx context.Context, iprot thrift.TProtocol) error {
-  p.Success = &ListResponse{}
-  if err := p.Success.Read(ctx, iprot); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", p.Success), err)
-  }
-  return nil
+func (p *CommentHandlerListResult) ReadField0(ctx context.Context, iprot thrift.TProtocol) error {
+	p.Success = &ListResponse{}
+	if err := p.Success.Read(ctx, iprot); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", p.Success), err)
+	}
+	return nil
 }
 
 func (p *CommentHandlerListResult) Write(ctx context.Context, oprot thrift.TProtocol) error {
-  if err := oprot.WriteStructBegin(ctx, "List_result"); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err) }
-  if p != nil {
-    if err := p.writeField0(ctx, oprot); err != nil { return err }
-  }
-  if err := oprot.WriteFieldStop(ctx); err != nil {
-    return thrift.PrependError("write field stop error: ", err) }
-  if err := oprot.WriteStructEnd(ctx); err != nil {
-    return thrift.PrependError("write struct stop error: ", err) }
-  return nil
+	if err := oprot.WriteStructBegin(ctx, "List_result"); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+	}
+	if p != nil {
+		if err := p.writeField0(ctx, oprot); err != nil {
+			return err
+		}
+	}
+	if err := oprot.WriteFieldStop(ctx); err != nil {
+		return thrift.PrependError("write field stop error: ", err)
+	}
+	if err := oprot.WriteStructEnd(ctx); err != nil {
+		return thrift.PrependError("write struct stop error: ", err)
+	}
+	return nil
 }
 
 func (p *CommentHandlerListResult) writeField0(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if p.IsSetSuccess() {
-    if err := oprot.WriteFieldBegin(ctx, "success", thrift.STRUCT, 0); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T write field begin error 0:success: ", p), err) }
-    if err := p.Success.Write(ctx, oprot); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", p.Success), err)
-    }
-    if err := oprot.WriteFieldEnd(ctx); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T write field end error 0:success: ", p), err) }
-  }
-  return err
+	if p.IsSetSuccess() {
+		if err := oprot.WriteFieldBegin(ctx, "success", thrift.STRUCT, 0); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field begin error 0:success: ", p), err)
+		}
+		if err := p.Success.Write(ctx, oprot); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", p.Success), err)
+		}
+		if err := oprot.WriteFieldEnd(ctx); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field end error 0:success: ", p), err)
+		}
+	}
+	return err
 }
 
 func (p *CommentHandlerListResult) String() string {
-  if p == nil {
-    return "<nil>"
-  }
-  return fmt.Sprintf("CommentHandlerListResult(%+v)", *p)
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("CommentHandlerListResult(%+v)", *p)
 }
 
 // Attributes:
-//  - Req
+//   - Req
 type CommentHandlerDeleteArgs struct {
-  Req *DeleteRequest `thrift:"req,1" db:"req" json:"req"`
+	Req *DeleteRequest `thrift:"req,1" db:"req" json:"req"`
 }
 
 func NewCommentHandlerDeleteArgs() *CommentHandlerDeleteArgs {
-  return &CommentHandlerDeleteArgs{}
+	return &CommentHandlerDeleteArgs{}
 }
 
 var CommentHandlerDeleteArgs_Req_DEFAULT *DeleteRequest
+
 func (p *CommentHandlerDeleteArgs) GetReq() *DeleteRequest {
-  if !p.IsSetReq() {
-    return CommentHandlerDeleteArgs_Req_DEFAULT
-  }
-return p.Req
+	if !p.IsSetReq() {
+		return CommentHandlerDeleteArgs_Req_DEFAULT
+	}
+	return p.Req
 }
 func (p *CommentHandlerDeleteArgs) IsSetReq() bool {
-  return p.Req != nil
+	return p.Req != nil
 }
 
 func (p *CommentHandlerDeleteArgs) Read(ctx context.Context, iprot thrift.TProtocol) error {
-  if _, err := iprot.ReadStructBegin(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
-  }
+	if _, err := iprot.ReadStructBegin(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
+	}
 
-
-  for {
-    _, fieldTypeId, fieldId, err := iprot.ReadFieldBegin(ctx)
-    if err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
-    }
-    if fieldTypeId == thrift.STOP { break; }
-    switch fieldId {
-    case 1:
-      if fieldTypeId == thrift.STRUCT {
-        if err := p.ReadField1(ctx, iprot); err != nil {
-          return err
-        }
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    default:
-      if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-        return err
-      }
-    }
-    if err := iprot.ReadFieldEnd(ctx); err != nil {
-      return err
-    }
-  }
-  if err := iprot.ReadStructEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
-  }
-  return nil
+	for {
+		_, fieldTypeId, fieldId, err := iprot.ReadFieldBegin(ctx)
+		if err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.STRUCT {
+				if err := p.ReadField1(ctx, iprot); err != nil {
+					return err
+				}
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		default:
+			if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+				return err
+			}
+		}
+		if err := iprot.ReadFieldEnd(ctx); err != nil {
+			return err
+		}
+	}
+	if err := iprot.ReadStructEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+	}
+	return nil
 }
 
-func (p *CommentHandlerDeleteArgs)  ReadField1(ctx context.Context, iprot thrift.TProtocol) error {
-  p.Req = &DeleteRequest{}
-  if err := p.Req.Read(ctx, iprot); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", p.Req), err)
-  }
-  return nil
+func (p *CommentHandlerDeleteArgs) ReadField1(ctx context.Context, iprot thrift.TProtocol) error {
+	p.Req = &DeleteRequest{}
+	if err := p.Req.Read(ctx, iprot); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", p.Req), err)
+	}
+	return nil
 }
 
 func (p *CommentHandlerDeleteArgs) Write(ctx context.Context, oprot thrift.TProtocol) error {
-  if err := oprot.WriteStructBegin(ctx, "Delete_args"); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err) }
-  if p != nil {
-    if err := p.writeField1(ctx, oprot); err != nil { return err }
-  }
-  if err := oprot.WriteFieldStop(ctx); err != nil {
-    return thrift.PrependError("write field stop error: ", err) }
-  if err := oprot.WriteStructEnd(ctx); err != nil {
-    return thrift.PrependError("write struct stop error: ", err) }
-  return nil
+	if err := oprot.WriteStructBegin(ctx, "Delete_args"); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+	}
+	if p != nil {
+		if err := p.writeField1(ctx, oprot); err != nil {
+			return err
+		}
+	}
+	if err := oprot.WriteFieldStop(ctx); err != nil {
+		return thrift.PrependError("write field stop error: ", err)
+	}
+	if err := oprot.WriteStructEnd(ctx); err != nil {
+		return thrift.PrependError("write struct stop error: ", err)
+	}
+	return nil
 }
 
 func (p *CommentHandlerDeleteArgs) writeField1(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if err := oprot.WriteFieldBegin(ctx, "req", thrift.STRUCT, 1); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field begin error 1:req: ", p), err) }
-  if err := p.Req.Write(ctx, oprot); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", p.Req), err)
-  }
-  if err := oprot.WriteFieldEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write field end error 1:req: ", p), err) }
-  return err
+	if err := oprot.WriteFieldBegin(ctx, "req", thrift.STRUCT, 1); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field begin error 1:req: ", p), err)
+	}
+	if err := p.Req.Write(ctx, oprot); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", p.Req), err)
+	}
+	if err := oprot.WriteFieldEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write field end error 1:req: ", p), err)
+	}
+	return err
 }
 
 func (p *CommentHandlerDeleteArgs) String() string {
-  if p == nil {
-    return "<nil>"
-  }
-  return fmt.Sprintf("CommentHandlerDeleteArgs(%+v)", *p)
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("CommentHandlerDeleteArgs(%+v)", *p)
 }
 
 // Attributes:
-//  - Success
+//   - Success
 type CommentHandlerDeleteResult struct {
-  Success *DeleteResponse `thrift:"success,0" db:"success" json:"success,omitempty"`
+	Success *DeleteResponse `thrift:"success,0" db:"success" json:"success,omitempty"`
 }
 
 func NewCommentHandlerDeleteResult() *CommentHandlerDeleteResult {
-  return &CommentHandlerDeleteResult{}
+	return &CommentHandlerDeleteResult{}
 }
 
 var CommentHandlerDeleteResult_Success_DEFAULT *DeleteResponse
+
 func (p *CommentHandlerDeleteResult) GetSuccess() *DeleteResponse {
-  if !p.IsSetSuccess() {
-    return CommentHandlerDeleteResult_Success_DEFAULT
-  }
-return p.Success
+	if !p.IsSetSuccess() {
+		return CommentHandlerDeleteResult_Success_DEFAULT
+	}
+	return p.Success
 }
 func (p *CommentHandlerDeleteResult) IsSetSuccess() bool {
-  return p.Success != nil
+	return p.Success != nil
 }
 
 func (p *CommentHandlerDeleteResult) Read(ctx context.Context, iprot thrift.TProtocol) error {
-  if _, err := iprot.ReadStructBegin(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
-  }
+	if _, err := iprot.ReadStructBegin(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T read error: ", p), err)
+	}
 
-
-  for {
-    _, fieldTypeId, fieldId, err := iprot.ReadFieldBegin(ctx)
-    if err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
-    }
-    if fieldTypeId == thrift.STOP { break; }
-    switch fieldId {
-    case 0:
-      if fieldTypeId == thrift.STRUCT {
-        if err := p.ReadField0(ctx, iprot); err != nil {
-          return err
-        }
-      } else {
-        if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-          return err
-        }
-      }
-    default:
-      if err := iprot.Skip(ctx, fieldTypeId); err != nil {
-        return err
-      }
-    }
-    if err := iprot.ReadFieldEnd(ctx); err != nil {
-      return err
-    }
-  }
-  if err := iprot.ReadStructEnd(ctx); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
-  }
-  return nil
+	for {
+		_, fieldTypeId, fieldId, err := iprot.ReadFieldBegin(ctx)
+		if err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T field %d read error: ", p, fieldId), err)
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+		switch fieldId {
+		case 0:
+			if fieldTypeId == thrift.STRUCT {
+				if err := p.ReadField0(ctx, iprot); err != nil {
+					return err
+				}
+			} else {
+				if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+					return err
+				}
+			}
+		default:
+			if err := iprot.Skip(ctx, fieldTypeId); err != nil {
+				return err
+			}
+		}
+		if err := iprot.ReadFieldEnd(ctx); err != nil {
+			return err
+		}
+	}
+	if err := iprot.ReadStructEnd(ctx); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+	}
+	return nil
 }
 
-func (p *CommentHandlerDeleteResult)  ReadField0(ctx context.Context, iprot thrift.TProtocol) error {
-  p.Success = &DeleteResponse{}
-  if err := p.Success.Read(ctx, iprot); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", p.Success), err)
-  }
-  return nil
+func (p *CommentHandlerDeleteResult) ReadField0(ctx context.Context, iprot thrift.TProtocol) error {
+	p.Success = &DeleteResponse{}
+	if err := p.Success.Read(ctx, iprot); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T error reading struct: ", p.Success), err)
+	}
+	return nil
 }
 
 func (p *CommentHandlerDeleteResult) Write(ctx context.Context, oprot thrift.TProtocol) error {
-  if err := oprot.WriteStructBegin(ctx, "Delete_result"); err != nil {
-    return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err) }
-  if p != nil {
-    if err := p.writeField0(ctx, oprot); err != nil { return err }
-  }
-  if err := oprot.WriteFieldStop(ctx); err != nil {
-    return thrift.PrependError("write field stop error: ", err) }
-  if err := oprot.WriteStructEnd(ctx); err != nil {
-    return thrift.PrependError("write struct stop error: ", err) }
-  return nil
+	if err := oprot.WriteStructBegin(ctx, "Delete_result"); err != nil {
+		return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+	}
+	if p != nil {
+		if err := p.writeField0(ctx, oprot); err != nil {
+			return err
+		}
+	}
+	if err := oprot.WriteFieldStop(ctx); err != nil {
+		return thrift.PrependError("write field stop error: ", err)
+	}
+	if err := oprot.WriteStructEnd(ctx); err != nil {
+		return thrift.PrependError("write struct stop error: ", err)
+	}
+	return nil
 }
 
 func (p *CommentHandlerDeleteResult) writeField0(ctx context.Context, oprot thrift.TProtocol) (err error) {
-  if p.IsSetSuccess() {
-    if err := oprot.WriteFieldBegin(ctx, "success", thrift.STRUCT, 0); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T write field begin error 0:success: ", p), err) }
-    if err := p.Success.Write(ctx, oprot); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", p.Success), err)
-    }
-    if err := oprot.WriteFieldEnd(ctx); err != nil {
-      return thrift.PrependError(fmt.Sprintf("%T write field end error 0:success: ", p), err) }
-  }
-  return err
+	if p.IsSetSuccess() {
+		if err := oprot.WriteFieldBegin(ctx, "success", thrift.STRUCT, 0); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field begin error 0:success: ", p), err)
+		}
+		if err := p.Success.Write(ctx, oprot); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T error writing struct: ", p.Success), err)
+		}
+		if err := oprot.WriteFieldEnd(ctx); err != nil {
+			return thrift.PrependError(fmt.Sprintf("%T write field end error 0:success: ", p), err)
+		}
+	}
+	return err
 }
 
 func (p *CommentHandlerDeleteResult) String() string {
-  if p == nil {
-    return "<nil>"
-  }
-  return fmt.Sprintf("CommentHandlerDeleteResult(%+v)", *p)
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("CommentHandlerDeleteResult(%+v)", *p)
 }
-
-

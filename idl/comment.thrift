@@ -24,12 +24,13 @@ struct PostRequest {
     4: required i32 app_id
     5: required string text
     6: optional list<string> images
-    7: optional string extra  // 要求 JSON string
+    7: optional i64 reply_comment_id
+    8: optional string extra  // 要求 JSON string
     255: optional base.RPCRequest Base
 }
 
 struct PostResponse {
-    1: required i64 comment_id
+    1: optional CommentData comment_data
     255: required base.RPCResponse Base
 }
 
@@ -64,9 +65,10 @@ struct CommentData {
     5: required i32 app_id
     6: required string text
     7: optional list<string> images
-    8: required i64 created_at
-    9: required i64 updated_at
-    10: optional string extra  // JSON string
+    8: optional i64 reply_comment_id
+    9: required i64 created_at
+    10: required i64 updated_at
+    11: optional string extra  // JSON string
 }
 
 struct DeleteRequest {
