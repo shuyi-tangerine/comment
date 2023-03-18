@@ -80,3 +80,20 @@ func (m *Comment) ToListImages(ctx context.Context) (images []string, err error)
 	err = json.Unmarshal([]byte(*m.Images), &images)
 	return
 }
+
+func (m *Comment) Clone(ctx context.Context) (c *Comment) {
+	return &Comment{
+		ID:             m.ID,
+		CommentID:      m.CommentID,
+		UserID:         m.UserID,
+		GroupID:        m.GroupID,
+		AppID:          m.AppID,
+		Text:           m.Text,
+		Images:         m.Images,
+		ReplyCommentID: m.ReplyCommentID,
+		CreatedAt:      m.CreatedAt,
+		UpdatedAt:      m.UpdatedAt,
+		Status:         m.Status,
+		Extra:          m.Extra,
+	}
+}

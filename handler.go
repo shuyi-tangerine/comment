@@ -4,22 +4,29 @@ import (
 	"context"
 	"github.com/shuyi-tangerine/comment/gen-go/base"
 	"github.com/shuyi-tangerine/comment/gen-go/tangerine/comment"
+	"github.com/shuyi-tangerine/comment/idgen"
+	"github.com/shuyi-tangerine/comment/memory"
+	"github.com/shuyi-tangerine/comment/server"
 	"github.com/shuyi-tangerine/comment/top"
-	"time"
 )
 
 type CommentHandler struct {
 	commentService top.CommentService
+	idGenerator    top.IDGenerator
 }
 
-func NewCommentHandler(commentService top.CommentService) comment.CommentHandler {
+func NewCommentHandler() comment.CommentHandler {
+
+	idGenerator := idgen.NewTimestamp()
+	commentStorage := memory.NewCommentStorage()
+	commentService := server.NewCommentService(commentStorage, idGenerator)
+
 	return &CommentHandler{
 		commentService: commentService,
+		idGenerator:    idGenerator,
 	}
 }
 
-// GenCommentID
-// TODO 改成分布式ID生成算法
 func (m *CommentHandler) GenCommentID(ctx context.Context, req *comment.GenCommentIDRequest) (res *comment.GenCommentIDResponse, err error) {
 	res = &comment.GenCommentIDResponse{
 		CommentIds: nil,
@@ -29,16 +36,29 @@ func (m *CommentHandler) GenCommentID(ctx context.Context, req *comment.GenComme
 		},
 	}
 
-	amount := 1
+	defer func() {
+		if err != nil {
+			res = &comment.GenCommentIDResponse{
+				Base: &base.RPCResponse{
+					Code:    -1,
+					Message: err.Error(),
+				},
+			}
+			err = nil
+		}
+	}()
+
+	amount := int8(1)
 	if req.Amount != nil && *req.Amount > 0 {
-		amount = int(*req.Amount)
+		amount = *req.Amount
 	}
 
-	baseID := time.Now().UnixMilli()
-	res.CommentIds = append(res.CommentIds, baseID)
-	for i := 1; i < amount; i++ {
-		res.CommentIds = append(res.CommentIds, baseID+int64(i))
+	ids, err := m.idGenerator.Gen(ctx, amount)
+	if err != nil {
+		return
 	}
+
+	res.CommentIds = ids
 	return
 }
 
